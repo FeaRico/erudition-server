@@ -39,4 +39,9 @@ public class Question {
             name = "item"
     )
     private Long item;
+
+    @Column(
+            name = "image_path"
+    )
+    private String imagePath;
 }
