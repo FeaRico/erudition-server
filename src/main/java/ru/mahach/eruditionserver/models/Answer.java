@@ -26,17 +26,22 @@ public class Answer {
     private Long id;
 
     @Column(
-            name = "text"
+            name = "text",
+            nullable = false,
+            unique = true
     )
     private String text;
 
     @Column(
-            name = "question"
+            name = "question",
+            nullable = false,
+            unique = true
     )
     private Long question;
 
     @Column(
-            name = "is_true"
+            name = "is_true",
+            nullable = false
     )
     private Boolean isTrue;
 

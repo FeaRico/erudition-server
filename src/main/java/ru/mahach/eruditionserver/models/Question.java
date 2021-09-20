@@ -32,7 +32,8 @@ public class Question {
     private String text;
 
     @Column(
-            name = "item"
+            name = "item",
+            nullable = false
     )
     private Long item;
 
