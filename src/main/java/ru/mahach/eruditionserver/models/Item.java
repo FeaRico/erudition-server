@@ -14,7 +14,8 @@ public class Item {
     )
     @SequenceGenerator(
             name = "items_id_seq",
-            sequenceName = "items_id_seq"
+            sequenceName = "items_id_seq",
+            allocationSize = 1
     )
     @Column(
             name = "id",

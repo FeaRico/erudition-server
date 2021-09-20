@@ -13,7 +13,8 @@ public class Question {
     )
     @SequenceGenerator(
             name = "questions_id_seq",
-            sequenceName = "questions_id_seq"
+            sequenceName = "questions_id_seq",
+            allocationSize = 1
     )
     @Column(
             name = "id",
@@ -29,12 +30,6 @@ public class Question {
             nullable = false
     )
     private String text;
-
-    @Column(
-            name = "true_answer",
-            nullable = false
-    )
-    private Long true_answer;
 
     @Column(
             name = "item"
@@ -62,14 +57,6 @@ public class Question {
         this.text = text;
     }
 
-    public Long getTrue_answer() {
-        return true_answer;
-    }
-
-    public void setTrue_answer(Long true_answer) {
-        this.true_answer = true_answer;
-    }
-
     public Long getItem() {
         return item;
     }
@@ -91,12 +78,12 @@ public class Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return id.equals(question.id) && text.equals(question.text) && true_answer.equals(question.true_answer) && item.equals(question.item) && Objects.equals(imagePath, question.imagePath);
+        return id.equals(question.id) && text.equals(question.text) && item.equals(question.item);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, true_answer, item, imagePath);
+        return Objects.hash(id, text, item);
     }
 
     @Override
@@ -104,7 +91,6 @@ public class Question {
         return "Question{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", true_answer=" + true_answer +
                 ", item=" + item +
                 ", imagePath='" + imagePath + '\'' +
                 '}';

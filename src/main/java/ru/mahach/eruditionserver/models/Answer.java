@@ -13,7 +13,8 @@ public class Answer {
     )
     @SequenceGenerator(
             name = "answers_id_seq",
-            sequenceName = "answers_id_seq"
+            sequenceName = "answers_id_seq",
+            allocationSize = 1
     )
     @Column(
             name = "id",
@@ -33,6 +34,11 @@ public class Answer {
             name = "question"
     )
     private Long question;
+
+    @Column(
+            name = "is_true"
+    )
+    private Boolean isTrue;
 
     public Long getId() {
         return id;
@@ -58,17 +64,25 @@ public class Answer {
         this.question = question;
     }
 
+    public Boolean getTrue() {
+        return isTrue;
+    }
+
+    public void setTrue(Boolean isTrue) {
+        this.isTrue = isTrue;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Answer answer = (Answer) o;
-        return id.equals(answer.id) && text.equals(answer.text) && question.equals(answer.question);
+        return id.equals(answer.id) && text.equals(answer.text) && question.equals(answer.question) && isTrue.equals(answer.isTrue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, question);
+        return Objects.hash(id, text, question, isTrue);
     }
 
     @Override
@@ -77,6 +91,7 @@ public class Answer {
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", question=" + question +
+                ", is_true=" + isTrue +
                 '}';
     }
 }
