@@ -57,7 +57,7 @@ class ItemControllerTest {
         Item newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
         Item updateItem = createItem(newItem.getId(), "TestUpdate", "testPath");
 
-        MvcResult mvcResult = mvc.perform(put("/api/v1/item")
+        mvc.perform(put("/api/v1/item")
                 .content(asJsonString(updateItem))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -65,8 +65,7 @@ class ItemControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(updateItem.getId().intValue())))
                 .andExpect(jsonPath("name", is(updateItem.getName())))
-                .andExpect(jsonPath("imagePath", is(updateItem.getImagePath())))
-                .andReturn();
+                .andExpect(jsonPath("imagePath", is(updateItem.getImagePath())));
 
         itemService.deleteItemById(updateItem.getId()).orElseThrow();
     }
