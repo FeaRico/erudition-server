@@ -29,7 +29,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Optional<Question> updateQuestion(Question question) {
         Question questionToUpdate = questionRepository.findById(question.getId())
                 .orElseThrow(() -> new QuestionNotFoundException(question.getId()));
-        return Optional.of(questionRepository.save(question));
+        return Optional.of(questionRepository.save(questionToUpdate));
     }
 
     @Override
