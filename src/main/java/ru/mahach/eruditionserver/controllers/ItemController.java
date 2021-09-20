@@ -47,5 +47,11 @@ public class ItemController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Item> itemById(@PathVariable Long id){
+        return ResponseEntity.ok(itemService.itemFindById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id)));
+    }
+
 
 }
