@@ -29,6 +29,9 @@ public class QuestionServiceImpl implements QuestionService {
     public Optional<Question> updateQuestion(Question question) {
         Question questionToUpdate = questionRepository.findById(question.getId())
                 .orElseThrow(() -> new QuestionNotFoundException(question.getId()));
+        questionToUpdate.setText(question.getText());
+        questionToUpdate.setItem(question.getItem());
+        questionToUpdate.setImagePath(question.getImagePath());
         return Optional.of(questionRepository.save(questionToUpdate));
     }
 

@@ -29,6 +29,9 @@ public class AnswerServiceImpl implements AnswerService {
     public Optional<Answer> updateAnswer(Answer answer) {
         Answer answerToUpdate = answerRepository.findById(answer.getId())
                 .orElseThrow(() -> new AnswerNotFoundException(answer.getId()));
+        answerToUpdate.setText(answer.getText());
+        answerToUpdate.setQuestion(answer.getQuestion());
+        answerToUpdate.setTrue(answer.getTrue());
         return Optional.of(answerRepository.save(answerToUpdate));
     }
 

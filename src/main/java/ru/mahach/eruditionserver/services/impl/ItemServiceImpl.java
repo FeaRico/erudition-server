@@ -29,6 +29,8 @@ public class ItemServiceImpl implements ItemService {
     public Optional<Item> updateItem(Item item) {
         Item itemToUpdate = itemRepository.findById(item.getId())
                 .orElseThrow(() -> new ItemNotFoundException(item.getId()));
+        itemToUpdate.setName(item.getName());
+        itemToUpdate.setImagePath(item.getImagePath());
         return Optional.of(itemRepository.save(itemToUpdate));
     }
 
