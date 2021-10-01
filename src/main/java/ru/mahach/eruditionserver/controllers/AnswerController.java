@@ -10,7 +10,7 @@ import ru.mahach.eruditionserver.services.AnswerService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping(value = "api/v1/answer")
+@RequestMapping(value = "api/v1/answers")
 @CrossOrigin(value = "http://localhost:4200", allowCredentials = "true")
 public class AnswerController {
 
@@ -38,7 +38,7 @@ public class AnswerController {
                 .orElseThrow(() -> new AnswerException("Failed to delete answer")));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<Collection<Answer>> allAnswer(){
         Collection<Answer> result = answerService.answerFindAll();
         if(result.isEmpty()){

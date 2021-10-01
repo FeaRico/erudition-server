@@ -33,7 +33,7 @@ class QuestionControllerTest {
     @Test
     void shouldCreateQuestion() throws Exception{
         Question createQuestion  = createQuestion(null, "TextTest", 1L, "TestPath");
-        MvcResult mvcResult = mvc.perform(post("/api/v1/question")
+        MvcResult mvcResult = mvc.perform(post("/api/v1/questions")
                 .content(asJsonString(createQuestion))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -57,7 +57,7 @@ class QuestionControllerTest {
         Question newQuestions = questionOptional.orElseThrow(IllegalArgumentException::new);
         Question updateQuestion = createQuestion(newQuestions.getId(), "TextTestUpdate", 2L, "TestPathUpdate");
 
-        mvc.perform(put("/api/v1/question")
+        mvc.perform(put("/api/v1/questions")
                 .content(asJsonString(updateQuestion))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -79,7 +79,7 @@ class QuestionControllerTest {
         Question newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
         int id = newQuestion.getId().intValue();
 
-        mvc.perform(delete("/api/v1/question/{id}", id)
+        mvc.perform(delete("/api/v1/questions/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -95,7 +95,7 @@ class QuestionControllerTest {
         Question newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
         int id = newQuestion.getId().intValue();
 
-        mvc.perform(get("/api/v1/question/{id}", id)
+        mvc.perform(get("/api/v1/questions/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

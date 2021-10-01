@@ -27,15 +27,13 @@ public class Answer {
 
     @Column(
             name = "text",
-            nullable = false,
-            unique = true
+            nullable = false
     )
     private String text;
 
     @Column(
             name = "question",
-            nullable = false,
-            unique = true
+            nullable = false
     )
     private Long question;
 

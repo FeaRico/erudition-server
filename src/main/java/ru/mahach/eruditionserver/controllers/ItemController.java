@@ -10,7 +10,7 @@ import ru.mahach.eruditionserver.services.ItemService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping(value = "api/v1/item")
+@RequestMapping(value = "api/v1/items")
 @CrossOrigin(value = "http://localhost:4200", allowCredentials = "true")
 public class ItemController {
 
@@ -38,7 +38,7 @@ public class ItemController {
                 .orElseThrow(() -> new ItemException("Failed to delete item")));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<Collection<Item>> allItems(){
         Collection<Item> result = itemService.itemFindAll();
         if(result.isEmpty()){
@@ -52,6 +52,4 @@ public class ItemController {
         return ResponseEntity.ok(itemService.itemFindById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id)));
     }
-
-
 }

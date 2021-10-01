@@ -34,7 +34,7 @@ class ItemControllerTest {
     @Test
     void shouldCreateItem() throws Exception {
         Item createItem = createItem(null, "Математика", "photo\\items\\math.img");
-        MvcResult mvcResult = mvc.perform(post("/api/v1/item")
+        MvcResult mvcResult = mvc.perform(post("/api/v1/items")
                 .content(asJsonString(createItem))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -57,7 +57,7 @@ class ItemControllerTest {
         Item newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
         Item updateItem = createItem(newItem.getId(), "TestUpdate", "testPath");
 
-        mvc.perform(put("/api/v1/item")
+        mvc.perform(put("/api/v1/items")
                 .content(asJsonString(updateItem))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -76,7 +76,7 @@ class ItemControllerTest {
         Optional<Item> itemOptional = itemService.createItem(createItem);
         Item newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
         int id = newItem.getId().intValue();
-        mvc.perform(delete("/api/v1/item/{id}", id)
+        mvc.perform(delete("/api/v1/items/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class ItemControllerTest {
         Optional<Item> itemOptional = itemService.createItem(createItem);
         Item newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
         int id = newItem.getId().intValue();
-        mvc.perform(get("/api/v1/item/{id}", id)
+        mvc.perform(get("/api/v1/items/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

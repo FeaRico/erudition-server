@@ -10,7 +10,7 @@ import ru.mahach.eruditionserver.services.QuestionService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping(value = "api/v1/question")
+@RequestMapping(value = "api/v1/questions")
 @CrossOrigin(value = "http://localhost:4200", allowCredentials = "true")
 public class QuestionController {
 
@@ -38,7 +38,7 @@ public class QuestionController {
                 .orElseThrow(() -> new QuestionException("Failed to delete question")));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<Collection<Question>> allQuestion(){
         Collection<Question> result = questionService.questionFindAll();
         if(result.isEmpty()){

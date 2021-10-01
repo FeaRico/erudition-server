@@ -33,7 +33,7 @@ class AnswerControllerTest {
     @Test
     void shouldCreateAnswer() throws Exception{
         Answer createAnswer = createAnswer(null, "TextTest", 1L, true);
-        MvcResult mvcResult = mvc.perform(post("/api/v1/answer")
+        MvcResult mvcResult = mvc.perform(post("/api/v1/answers")
                 .content(asJsonString(createAnswer))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -57,7 +57,7 @@ class AnswerControllerTest {
         Answer newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
         Answer updateAnswer = createAnswer(newAnswer.getId(), "TextTestUpdate", 2L, false);
 
-        mvc.perform(put("/api/v1/answer")
+        mvc.perform(put("/api/v1/answers")
                 .content(asJsonString(updateAnswer))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -78,7 +78,7 @@ class AnswerControllerTest {
         Answer newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
         int id = newAnswer.getId().intValue();
 
-        mvc.perform(delete("/api/v1/answer/{id}", id)
+        mvc.perform(delete("/api/v1/answers/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -92,7 +92,7 @@ class AnswerControllerTest {
         Optional<Answer> answerOptional = answerService.createAnswer(createAnswer);
         Answer newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
         int id = newAnswer.getId().intValue();
-        mvc.perform(get("/api/v1/answer/{id}", id)
+        mvc.perform(get("/api/v1/answers/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
