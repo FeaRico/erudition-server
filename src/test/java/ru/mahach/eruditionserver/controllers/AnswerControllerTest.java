@@ -55,7 +55,7 @@ class AnswerControllerTest {
     void shouldUpdateAnswer() throws Exception{
         Optional<Answer> answerOptional = answerService.createAnswer(createAnswer(null, "TextTest", 1L, true));
         Answer newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
-        Answer updateAnswer = createAnswer(newAnswer.getId(), "TextTestUpdate", 2L, false);
+        Answer updateAnswer = createAnswer(newAnswer.getId(), "TextTestUpdate", 1L, false);
 
         mvc.perform(put("/api/v1/answers")
                 .content(asJsonString(updateAnswer))

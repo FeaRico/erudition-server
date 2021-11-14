@@ -55,7 +55,7 @@ class QuestionControllerTest {
     void shouldUpdateQuestion() throws Exception{
         Optional<Question> questionOptional = questionService.createQuestion(createQuestion(null, "TextTest", 1L, "TestPath"));
         Question newQuestions = questionOptional.orElseThrow(IllegalArgumentException::new);
-        Question updateQuestion = createQuestion(newQuestions.getId(), "TextTestUpdate", 2L, "TestPathUpdate");
+        Question updateQuestion = createQuestion(newQuestions.getId(), "TextTestUpdate", 1L, "TestPathUpdate");
 
         mvc.perform(put("/api/v1/questions")
                 .content(asJsonString(updateQuestion))
