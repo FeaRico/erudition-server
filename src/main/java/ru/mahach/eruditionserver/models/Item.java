@@ -1,6 +1,8 @@
 package ru.mahach.eruditionserver.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -38,6 +40,10 @@ public class Item {
     )
     private String imagePath;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "item")
+    List<Question> questions = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -60,6 +66,14 @@ public class Item {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 
     @Override
