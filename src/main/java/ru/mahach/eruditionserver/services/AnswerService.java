@@ -5,6 +5,12 @@ import ru.mahach.eruditionserver.models.Answer;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * Интерфейс сервиса сущности {@link Answer}
+ * @author Makhach Abdulazizov
+ * @version 1.0
+ */
+
 public interface AnswerService {
 
     Optional<Answer> createAnswer(Answer answer);

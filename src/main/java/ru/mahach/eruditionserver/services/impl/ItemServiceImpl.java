@@ -10,6 +10,11 @@ import ru.mahach.eruditionserver.services.ItemService;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * Реализация сервиса {@link ItemService}
+ * @author Makhach Abdulazizov
+ * @version 1.0
+ */
 @Service
 @Transactional
 public class ItemServiceImpl implements ItemService {

@@ -10,6 +10,12 @@ import ru.mahach.eruditionserver.services.AnswerService;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * Реализация сервиса {@link AnswerService}
+ * @author Makhach Abdulazizov
+ * @version 1.0
+ */
+
 @Service
 @Transactional
 public class AnswerServiceImpl implements AnswerService {

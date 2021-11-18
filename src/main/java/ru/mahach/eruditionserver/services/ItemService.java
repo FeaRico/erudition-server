@@ -5,6 +5,11 @@ import java.util.Optional;
 
 import ru.mahach.eruditionserver.models.Item;
 
+/**
+ * Интерфейс сервиса {@link Item}
+ * @author Makhach Abdulazizov
+ * @version 1.0
+ */
 public interface ItemService {
 
     Optional<Item> createItem(Item item);

@@ -10,6 +10,11 @@ import ru.mahach.eruditionserver.services.QuestionService;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * Реализация сервиса {@link QuestionService}
+ * @author Makhach Abdulazizov
+ * @version 1.0
+ */
 @Service
 @Transactional
 public class QuestionServiceImpl implements QuestionService {

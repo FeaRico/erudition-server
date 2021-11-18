@@ -10,8 +10,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import ru.mahach.eruditionserver.exceptions.AnswerNotFoundException;
 import ru.mahach.eruditionserver.exceptions.ItemNotFoundException;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
-import ru.mahach.eruditionserver.exceptions.base.QuestionException;
 
+/**
+ * Обработчик исключений
+ * @author Makhach Abdulazizov
+ * @version 1.0
+ */
 @RestControllerAdvice
 public class BasicControllerExceptionHandler extends ResponseEntityExceptionHandler{
 
