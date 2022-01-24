@@ -1,26 +1,26 @@
 package ru.mahach.eruditionserver.services;
 
-import ru.mahach.eruditionserver.models.Answer;
+import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 
 import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Интерфейс сервиса сущности {@link Answer}
+ * Интерфейс сервиса сущности {@link AnswerEntity}
  * @author Makhach Abdulazizov
  * @version 1.0
  */
 
 public interface AnswerService {
 
-    Optional<Answer> createAnswer(Answer answer);
+    Optional<AnswerEntity> createAnswer(AnswerEntity answer);
 
-    Optional<Answer> updateAnswer(Answer answer);
+    Optional<AnswerEntity> updateAnswer(AnswerEntity answer);
 
-    Optional<Answer> deleteAnswerById(Long id);
+    Optional<AnswerEntity> deleteAnswerById(Long id);
 
-    Optional<Answer> answerFindById(Long id);
+    Optional<AnswerEntity> answerFindById(Long id);
 
-    Collection<Answer> answerFindAll();
+    Collection<AnswerEntity> answerFindAll();
 
 }

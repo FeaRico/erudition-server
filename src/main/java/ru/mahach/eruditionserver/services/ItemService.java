@@ -3,23 +3,23 @@ package ru.mahach.eruditionserver.services;
 import java.util.Collection;
 import java.util.Optional;
 
-import ru.mahach.eruditionserver.models.Item;
+import ru.mahach.eruditionserver.models.entity.ItemEntity;
 
 /**
- * Интерфейс сервиса {@link Item}
+ * Интерфейс сервиса {@link ItemEntity}
  * @author Makhach Abdulazizov
  * @version 1.0
  */
 public interface ItemService {
 
-    Optional<Item> createItem(Item item);
+    Optional<ItemEntity> createItem(ItemEntity item);
 
-    Optional<Item> updateItem(Item item);
+    Optional<ItemEntity> updateItem(ItemEntity item);
 
-    Optional<Item> deleteItemById(Long id);
+    Optional<ItemEntity> deleteItemById(Long id);
 
-    Optional<Item> itemFindById(Long id);
+    Optional<ItemEntity> itemFindById(Long id);
 
-    Collection<Item> itemFindAll();
+    Collection<ItemEntity> itemFindAll();
 
 }

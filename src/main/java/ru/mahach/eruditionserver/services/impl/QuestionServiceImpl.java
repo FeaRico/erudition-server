@@ -3,7 +3,7 @@ package ru.mahach.eruditionserver.services.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
-import ru.mahach.eruditionserver.models.Question;
+import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.repository.QuestionRepository;
 import ru.mahach.eruditionserver.services.QuestionService;
 
@@ -26,13 +26,13 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Optional<Question> createQuestion(Question question) {
+    public Optional<QuestionEntity> createQuestion(QuestionEntity question) {
         return Optional.of(questionRepository.save(question));
     }
 
     @Override
-    public Optional<Question> updateQuestion(Question question) {
-        Question questionToUpdate = questionRepository.findById(question.getId())
+    public Optional<QuestionEntity> updateQuestion(QuestionEntity question) {
+        QuestionEntity questionToUpdate = questionRepository.findById(question.getId())
                 .orElseThrow(() -> new QuestionNotFoundException(question.getId()));
         questionToUpdate.setText(question.getText());
         questionToUpdate.setItem(question.getItem());
@@ -41,8 +41,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Optional<Question> deleteQuestionById(Long id) {
-        Question questionToDelete = questionRepository.findById(id)
+    public Optional<QuestionEntity> deleteQuestionById(Long id) {
+        QuestionEntity questionToDelete = questionRepository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));
         questionRepository.deleteById(id);
         return Optional.of(questionToDelete);
@@ -50,13 +50,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Question> questionFindById(Long id) {
+    public Optional<QuestionEntity> questionFindById(Long id) {
         return questionRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Question> questionFindAll() {
+    public Collection<QuestionEntity> questionFindAll() {
         return questionRepository.findAll();
     }
 }

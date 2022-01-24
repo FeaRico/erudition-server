@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.mahach.eruditionserver.models.Answer;
+import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 import ru.mahach.eruditionserver.services.AnswerService;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ class AnswerControllerTest {
 
     @Test
     void shouldCreateAnswer() throws Exception{
-        Answer createAnswer = createAnswer(null, "TextTest", 1L, true);
+        AnswerEntity createAnswer = createAnswer(null, "TextTest", 1L, true);
         MvcResult mvcResult = mvc.perform(post("/api/v1/answers")
                 .content(asJsonString(createAnswer))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -53,9 +53,9 @@ class AnswerControllerTest {
 
     @Test
     void shouldUpdateAnswer() throws Exception{
-        Optional<Answer> answerOptional = answerService.createAnswer(createAnswer(null, "TextTest", 1L, true));
-        Answer newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
-        Answer updateAnswer = createAnswer(newAnswer.getId(), "TextTestUpdate", 1L, false);
+        Optional<AnswerEntity> answerOptional = answerService.createAnswer(createAnswer(null, "TextTest", 1L, true));
+        AnswerEntity newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
+        AnswerEntity updateAnswer = createAnswer(newAnswer.getId(), "TextTestUpdate", 1L, false);
 
         mvc.perform(put("/api/v1/answers")
                 .content(asJsonString(updateAnswer))
@@ -73,9 +73,9 @@ class AnswerControllerTest {
 
     @Test
     void shouldDeleteAnswer() throws Exception{
-        Answer createAnswer = createAnswer(null, "TestText", 1L, true);
-        Optional<Answer> answerOptional = answerService.createAnswer(createAnswer);
-        Answer newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
+        AnswerEntity createAnswer = createAnswer(null, "TestText", 1L, true);
+        Optional<AnswerEntity> answerOptional = answerService.createAnswer(createAnswer);
+        AnswerEntity newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
         int id = newAnswer.getId().intValue();
 
         mvc.perform(delete("/api/v1/answers/{id}", id)
@@ -88,9 +88,9 @@ class AnswerControllerTest {
 
     @Test
     void shouldGetAnswerById() throws Exception{
-        Answer createAnswer = createAnswer(null, "TestText", 1L, true);
-        Optional<Answer> answerOptional = answerService.createAnswer(createAnswer);
-        Answer newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
+        AnswerEntity createAnswer = createAnswer(null, "TestText", 1L, true);
+        Optional<AnswerEntity> answerOptional = answerService.createAnswer(createAnswer);
+        AnswerEntity newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
         int id = newAnswer.getId().intValue();
         mvc.perform(get("/api/v1/answers/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -105,8 +105,8 @@ class AnswerControllerTest {
         answerService.deleteAnswerById(newAnswer.getId());
     }
 
-    private Answer createAnswer(Long id, String text, Long question, Boolean isTrue){
-        Answer answer = new Answer();
+    private AnswerEntity createAnswer(Long id, String text, Long question, Boolean isTrue){
+        AnswerEntity answer = new AnswerEntity();
         answer.setId(id);
         answer.setText(text);
         answer.setQuestion(question);

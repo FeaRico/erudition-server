@@ -1,25 +1,25 @@
 package ru.mahach.eruditionserver.services;
 
-import ru.mahach.eruditionserver.models.Question;
+import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 
 import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Интерфейс сервиса {@link Question}
+ * Интерфейс сервиса {@link QuestionEntity}
  * @author Makhach Abdulazizov
  * @version 1.0
  */
 public interface QuestionService {
 
-    Optional<Question> createQuestion(Question question);
+    Optional<QuestionEntity> createQuestion(QuestionEntity question);
 
-    Optional<Question> updateQuestion(Question question);
+    Optional<QuestionEntity> updateQuestion(QuestionEntity question);
 
-    Optional<Question> deleteQuestionById(Long id);
+    Optional<QuestionEntity> deleteQuestionById(Long id);
 
-    Optional<Question> questionFindById(Long id);
+    Optional<QuestionEntity> questionFindById(Long id);
 
-    Collection<Question> questionFindAll();
+    Collection<QuestionEntity> questionFindAll();
 
 }

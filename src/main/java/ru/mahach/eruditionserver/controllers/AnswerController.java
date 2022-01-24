@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.AnswerNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.AnswerException;
-import ru.mahach.eruditionserver.models.Answer;
+import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 import ru.mahach.eruditionserver.services.AnswerService;
 
 import java.util.Collection;
@@ -21,26 +21,26 @@ public class AnswerController {
     }
 
     @PostMapping
-    public ResponseEntity<Answer> createAnswer(@RequestBody Answer answer){
+    public ResponseEntity<AnswerEntity> createAnswer(@RequestBody AnswerEntity answer){
         return ResponseEntity.ok(answerService.createAnswer(answer)
                 .orElseThrow(() -> new AnswerException("Failed to create answer")));
     }
 
     @PutMapping
-    public ResponseEntity<Answer> updateAnswer(@RequestBody Answer answer){
+    public ResponseEntity<AnswerEntity> updateAnswer(@RequestBody AnswerEntity answer){
         return ResponseEntity.ok(answerService.updateAnswer(answer)
                 .orElseThrow(() -> new AnswerException("Failed to update answer")));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Answer> deleteAnswer(@PathVariable Long id){
+    public ResponseEntity<AnswerEntity> deleteAnswer(@PathVariable Long id){
         return ResponseEntity.ok(answerService.deleteAnswerById(id)
                 .orElseThrow(() -> new AnswerException("Failed to delete answer")));
     }
 
     @GetMapping("/")
-    public ResponseEntity<Collection<Answer>> allAnswer(){
-        Collection<Answer> result = answerService.answerFindAll();
+    public ResponseEntity<Collection<AnswerEntity>> allAnswer(){
+        Collection<AnswerEntity> result = answerService.answerFindAll();
         if(result.isEmpty()){
             throw new AnswerNotFoundException();
         }
@@ -48,7 +48,7 @@ public class AnswerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Answer> answerById(@PathVariable Long id){
+    public ResponseEntity<AnswerEntity> answerById(@PathVariable Long id){
         return ResponseEntity.ok(answerService.answerFindById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id)));
     }

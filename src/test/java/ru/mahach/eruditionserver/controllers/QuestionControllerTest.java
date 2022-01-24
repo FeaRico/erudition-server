@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.mahach.eruditionserver.models.Question;
+import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.services.QuestionService;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ class QuestionControllerTest {
 
     @Test
     void shouldCreateQuestion() throws Exception{
-        Question createQuestion  = createQuestion(null, "TextTest", 1L, "TestPath");
+        QuestionEntity createQuestion  = createQuestion(null, "TextTest", 1L, "TestPath");
         MvcResult mvcResult = mvc.perform(post("/api/v1/questions")
                 .content(asJsonString(createQuestion))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -53,9 +53,9 @@ class QuestionControllerTest {
 
     @Test
     void shouldUpdateQuestion() throws Exception{
-        Optional<Question> questionOptional = questionService.createQuestion(createQuestion(null, "TextTest", 1L, "TestPath"));
-        Question newQuestions = questionOptional.orElseThrow(IllegalArgumentException::new);
-        Question updateQuestion = createQuestion(newQuestions.getId(), "TextTestUpdate", 1L, "TestPathUpdate");
+        Optional<QuestionEntity> questionOptional = questionService.createQuestion(createQuestion(null, "TextTest", 1L, "TestPath"));
+        QuestionEntity newQuestions = questionOptional.orElseThrow(IllegalArgumentException::new);
+        QuestionEntity updateQuestion = createQuestion(newQuestions.getId(), "TextTestUpdate", 1L, "TestPathUpdate");
 
         mvc.perform(put("/api/v1/questions")
                 .content(asJsonString(updateQuestion))
@@ -74,9 +74,9 @@ class QuestionControllerTest {
 
     @Test
     void shouldDeleteQuestion() throws Exception{
-        Question createQuestion = createQuestion(null, "TextTest", 1L, "TestPath");
-        Optional<Question> questionOptional = questionService.createQuestion(createQuestion);
-        Question newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
+        QuestionEntity createQuestion = createQuestion(null, "TextTest", 1L, "TestPath");
+        Optional<QuestionEntity> questionOptional = questionService.createQuestion(createQuestion);
+        QuestionEntity newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
         int id = newQuestion.getId().intValue();
 
         mvc.perform(delete("/api/v1/questions/{id}", id)
@@ -90,9 +90,9 @@ class QuestionControllerTest {
 
     @Test
     void shouldGetQuestionById() throws Exception{
-        Question createQuestion = createQuestion(null, "TextTest", 1L, "TestPath");
-        Optional<Question> questionOptional = questionService.createQuestion(createQuestion);
-        Question newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
+        QuestionEntity createQuestion = createQuestion(null, "TextTest", 1L, "TestPath");
+        Optional<QuestionEntity> questionOptional = questionService.createQuestion(createQuestion);
+        QuestionEntity newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
         int id = newQuestion.getId().intValue();
 
         mvc.perform(get("/api/v1/questions/{id}", id)
@@ -108,8 +108,8 @@ class QuestionControllerTest {
         questionService.deleteQuestionById(newQuestion.getId());
     }
 
-    private Question createQuestion(Long id, String text, Long item, String imagePath){
-        Question question = new Question();
+    private QuestionEntity createQuestion(Long id, String text, Long item, String imagePath){
+        QuestionEntity question = new QuestionEntity();
         question.setId(id);
         question.setText(text);
         question.setItem(item);

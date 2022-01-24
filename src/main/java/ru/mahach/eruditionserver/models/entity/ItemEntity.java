@@ -1,4 +1,4 @@
-package ru.mahach.eruditionserver.models;
+package ru.mahach.eruditionserver.models.entity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -6,16 +6,17 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "questions")
-public class Question {
+@Table(name = "items")
+public class ItemEntity {
+
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "questions_id_seq"
+            generator = "items_id_seq"
     )
     @SequenceGenerator(
-            name = "questions_id_seq",
-            sequenceName = "questions_id_seq",
+            name = "items_id_seq",
+            sequenceName = "items_id_seq",
             allocationSize = 1
     )
     @Column(
@@ -28,16 +29,11 @@ public class Question {
     private Long id;
 
     @Column(
-            name = "text",
-            nullable = false
+            name = "name",
+            nullable = false,
+            length = 50
     )
-    private String text;
-
-    @Column(
-            name = "item",
-            nullable = false
-    )
-    private Long item;
+    private String name;
 
     @Column(
             name = "image_path"
@@ -45,8 +41,8 @@ public class Question {
     private String imagePath;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "question")
-    private List<Answer> answers = new ArrayList<>();
+    @JoinColumn(name = "item")
+    List<QuestionEntity> questions = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -56,20 +52,12 @@ public class Question {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getName() {
+        return name;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Long getItem() {
-        return item;
-    }
-
-    public void setItem(Long item) {
-        this.item = item;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getImagePath() {
@@ -80,33 +68,32 @@ public class Question {
         this.imagePath = imagePath;
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
+    public List<QuestionEntity> getQuestions() {
+        return questions;
     }
 
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+    public void setQuestions(List<QuestionEntity> questions) {
+        this.questions = questions;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Question question = (Question) o;
-        return id.equals(question.id) && text.equals(question.text) && item.equals(question.item);
+        ItemEntity item = (ItemEntity) o;
+        return id.equals(item.id) && name.equals(item.name) && Objects.equals(imagePath, item.imagePath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, item);
+        return Objects.hash(id, name, imagePath);
     }
 
     @Override
     public String toString() {
-        return "Question{" +
+        return "Item{" +
                 "id=" + id +
-                ", text='" + text + '\'' +
-                ", item=" + item +
+                ", name='" + name + '\'' +
                 ", imagePath='" + imagePath + '\'' +
                 '}';
     }

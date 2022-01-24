@@ -3,7 +3,7 @@ package ru.mahach.eruditionserver.services.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mahach.eruditionserver.exceptions.AnswerNotFoundException;
-import ru.mahach.eruditionserver.models.Answer;
+import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 import ru.mahach.eruditionserver.repository.AnswerRepository;
 import ru.mahach.eruditionserver.services.AnswerService;
 
@@ -27,13 +27,13 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Optional<Answer> createAnswer(Answer answer) {
+    public Optional<AnswerEntity> createAnswer(AnswerEntity answer) {
         return Optional.of(answerRepository.save(answer));
     }
 
     @Override
-    public Optional<Answer> updateAnswer(Answer answer) {
-        Answer answerToUpdate = answerRepository.findById(answer.getId())
+    public Optional<AnswerEntity> updateAnswer(AnswerEntity answer) {
+        AnswerEntity answerToUpdate = answerRepository.findById(answer.getId())
                 .orElseThrow(() -> new AnswerNotFoundException(answer.getId()));
         answerToUpdate.setText(answer.getText());
         answerToUpdate.setQuestion(answer.getQuestion());
@@ -42,8 +42,8 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Optional<Answer> deleteAnswerById(Long id) {
-        Answer answerToDelete = answerRepository.findById(id)
+    public Optional<AnswerEntity> deleteAnswerById(Long id) {
+        AnswerEntity answerToDelete = answerRepository.findById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id));
         answerRepository.deleteById(id);
         return Optional.of(answerToDelete);
@@ -51,13 +51,13 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Answer> answerFindById(Long id) {
+    public Optional<AnswerEntity> answerFindById(Long id) {
         return answerRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Answer> answerFindAll() {
+    public Collection<AnswerEntity> answerFindAll() {
         return answerRepository.findAll();
     }
 }

@@ -1,11 +1,11 @@
-package ru.mahach.eruditionserver.models;
+package ru.mahach.eruditionserver.models.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "answers")
-public class Answer {
+public class AnswerEntity {
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -79,7 +79,7 @@ public class Answer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Answer answer = (Answer) o;
+        AnswerEntity answer = (AnswerEntity) o;
         return id.equals(answer.id) && text.equals(answer.text) && question.equals(answer.question) && isTrue.equals(answer.isTrue);
     }
 

@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.mahach.eruditionserver.models.Item;
+import ru.mahach.eruditionserver.models.entity.ItemEntity;
 import ru.mahach.eruditionserver.services.ItemService;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ class ItemControllerTest {
 
     @Test
     void shouldCreateItem() throws Exception {
-        Item createItem = createItem(null, "Математика", "photo\\items\\math.img");
+        ItemEntity createItem = createItem(null, "Математика", "photo\\items\\math.img");
         MvcResult mvcResult = mvc.perform(post("/api/v1/items")
                 .content(asJsonString(createItem))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -53,9 +53,9 @@ class ItemControllerTest {
 
     @Test
     void shouldUpdateItem() throws Exception{
-        Optional<Item> itemOptional = itemService.createItem(createItem(null, "Test", "test_path"));
-        Item newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
-        Item updateItem = createItem(newItem.getId(), "TestUpdate", "testPath");
+        Optional<ItemEntity> itemOptional = itemService.createItem(createItem(null, "Test", "test_path"));
+        ItemEntity newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
+        ItemEntity updateItem = createItem(newItem.getId(), "TestUpdate", "testPath");
 
         mvc.perform(put("/api/v1/items")
                 .content(asJsonString(updateItem))
@@ -72,9 +72,9 @@ class ItemControllerTest {
 
     @Test
     void shouldDeleteItem() throws Exception{
-        Item createItem = createItem(null, "Test", "textpath");
-        Optional<Item> itemOptional = itemService.createItem(createItem);
-        Item newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
+        ItemEntity createItem = createItem(null, "Test", "textpath");
+        Optional<ItemEntity> itemOptional = itemService.createItem(createItem);
+        ItemEntity newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
         int id = newItem.getId().intValue();
         mvc.perform(delete("/api/v1/items/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -86,9 +86,9 @@ class ItemControllerTest {
 
     @Test
     void shouldGetItemById() throws Exception{
-        Item createItem = createItem(null, "TestName", "TestPath");
-        Optional<Item> itemOptional = itemService.createItem(createItem);
-        Item newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
+        ItemEntity createItem = createItem(null, "TestName", "TestPath");
+        Optional<ItemEntity> itemOptional = itemService.createItem(createItem);
+        ItemEntity newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
         int id = newItem.getId().intValue();
         mvc.perform(get("/api/v1/items/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -103,8 +103,8 @@ class ItemControllerTest {
 
     }
 
-    private Item createItem(Long id, String name, String imagePath){
-        Item item = new Item();
+    private ItemEntity createItem(Long id, String name, String imagePath){
+        ItemEntity item = new ItemEntity();
         item.setId(id);
         item.setName(name);
         item.setImagePath(imagePath);
