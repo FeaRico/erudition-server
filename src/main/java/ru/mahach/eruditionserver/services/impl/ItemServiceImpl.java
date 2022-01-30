@@ -3,7 +3,7 @@ package ru.mahach.eruditionserver.services.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mahach.eruditionserver.exceptions.ItemNotFoundException;
-import ru.mahach.eruditionserver.models.entity.ItemEntity;
+import ru.mahach.eruditionserver.entity.ItemEntity;
 import ru.mahach.eruditionserver.repository.ItemRepository;
 import ru.mahach.eruditionserver.services.ItemService;
 

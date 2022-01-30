@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.QuestionException;
-import ru.mahach.eruditionserver.models.entity.QuestionEntity;
+import ru.mahach.eruditionserver.entity.QuestionEntity;
 import ru.mahach.eruditionserver.services.QuestionService;
 
 import java.util.Collection;

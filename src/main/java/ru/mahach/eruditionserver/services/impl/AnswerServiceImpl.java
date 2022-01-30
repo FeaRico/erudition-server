@@ -3,7 +3,7 @@ package ru.mahach.eruditionserver.services.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mahach.eruditionserver.exceptions.AnswerNotFoundException;
-import ru.mahach.eruditionserver.models.entity.AnswerEntity;
+import ru.mahach.eruditionserver.entity.AnswerEntity;
 import ru.mahach.eruditionserver.repository.AnswerRepository;
 import ru.mahach.eruditionserver.services.AnswerService;
 
