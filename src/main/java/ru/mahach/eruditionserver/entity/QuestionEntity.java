@@ -34,10 +34,10 @@ public class QuestionEntity {
     private String text;
 
     @Column(
-            name = "item",
+            name = "item_id",
             nullable = false
     )
-    private Long item;
+    private Long itemId;
 
     @Column(
             name = "image_path"
@@ -45,7 +45,7 @@ public class QuestionEntity {
     private String imagePath;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "question")
+    @JoinColumn(name = "question_id")
     private List<AnswerEntity> answers = new ArrayList<>();
 
     public Long getId() {
@@ -64,12 +64,12 @@ public class QuestionEntity {
         this.text = text;
     }
 
-    public Long getItem() {
-        return item;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setItem(Long item) {
-        this.item = item;
+    public void setItemId(Long item) {
+        this.itemId = item;
     }
 
     public String getImagePath() {
@@ -93,12 +93,12 @@ public class QuestionEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         QuestionEntity question = (QuestionEntity) o;
-        return id.equals(question.id) && text.equals(question.text) && item.equals(question.item);
+        return id.equals(question.id) && text.equals(question.text) && itemId.equals(question.itemId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, item);
+        return Objects.hash(id, text, itemId);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class QuestionEntity {
         return "Question{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", item=" + item +
+                ", item=" + itemId +
                 ", imagePath='" + imagePath + '\'' +
                 '}';
     }

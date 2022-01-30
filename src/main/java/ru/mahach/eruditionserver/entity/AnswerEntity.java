@@ -32,10 +32,10 @@ public class AnswerEntity {
     private String text;
 
     @Column(
-            name = "question",
+            name = "question_id",
             nullable = false
     )
-    private Long question;
+    private Long questionId;
 
     @Column(
             name = "is_true",
@@ -59,15 +59,15 @@ public class AnswerEntity {
         this.text = text;
     }
 
-    public Long getQuestion() {
-        return question;
+    public Long getQuestionId() {
+        return questionId;
     }
 
-    public void setQuestion(Long question) {
-        this.question = question;
+    public void setQuestionId(Long question) {
+        this.questionId = question;
     }
 
-    public Boolean getTrue() {
+    public Boolean isTrue() {
         return isTrue;
     }
 
@@ -80,12 +80,12 @@ public class AnswerEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnswerEntity answer = (AnswerEntity) o;
-        return id.equals(answer.id) && text.equals(answer.text) && question.equals(answer.question) && isTrue.equals(answer.isTrue);
+        return id.equals(answer.id) && text.equals(answer.text) && questionId.equals(answer.questionId) && isTrue.equals(answer.isTrue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, question, isTrue);
+        return Objects.hash(id, text, questionId, isTrue);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AnswerEntity {
         return "Answer{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", question=" + question +
+                ", question=" + questionId +
                 ", is_true=" + isTrue +
                 '}';
     }

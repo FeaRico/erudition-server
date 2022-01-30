@@ -42,7 +42,7 @@ class QuestionControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("text", is(createQuestion.getText())))
-                .andExpect(jsonPath("item", is(createQuestion.getItem().intValue())))
+                .andExpect(jsonPath("item", is(createQuestion.getItemId().intValue())))
                 .andExpect(jsonPath("imagePath", is(createQuestion.getImagePath())))
                 .andReturn();
 
@@ -66,7 +66,7 @@ class QuestionControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(updateQuestion.getId().intValue())))
                 .andExpect(jsonPath("text", is(updateQuestion.getText())))
-                .andExpect(jsonPath("item", is(updateQuestion.getItem().intValue())))
+                .andExpect(jsonPath("item", is(updateQuestion.getItemId().intValue())))
                 .andExpect(jsonPath("imagePath", is(updateQuestion.getImagePath())));
 
         questionService.deleteQuestionById(updateQuestion.getId()).orElseThrow();
@@ -103,7 +103,7 @@ class QuestionControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(id)))
                 .andExpect(jsonPath("text", is(createQuestion.getText())))
-                .andExpect(jsonPath("item", is(createQuestion.getItem().intValue())))
+                .andExpect(jsonPath("item", is(createQuestion.getItemId().intValue())))
                 .andExpect(jsonPath("imagePath", is(createQuestion.getImagePath())));
         questionService.deleteQuestionById(newQuestion.getId());
     }
@@ -112,7 +112,7 @@ class QuestionControllerTest {
         QuestionEntity question = new QuestionEntity();
         question.setId(id);
         question.setText(text);
-        question.setItem(item);
+        question.setItemId(item);
         question.setImagePath(imagePath);
         return question;
     }

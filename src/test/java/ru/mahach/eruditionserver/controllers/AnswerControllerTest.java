@@ -42,8 +42,8 @@ class AnswerControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("text", is(createAnswer.getText())))
-                .andExpect(jsonPath("question", is(createAnswer.getQuestion().intValue())))
-                .andExpect(jsonPath("true", is(createAnswer.getTrue())))
+                .andExpect(jsonPath("question", is(createAnswer.getQuestionId().intValue())))
+                .andExpect(jsonPath("true", is(createAnswer.isTrue())))
                 .andReturn();
 
         String content = mvcResult.getResponse().getContentAsString();
@@ -65,8 +65,8 @@ class AnswerControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(updateAnswer.getId().intValue())))
                 .andExpect(jsonPath("text", is(updateAnswer.getText())))
-                .andExpect(jsonPath("question", is(updateAnswer.getQuestion().intValue())))
-                .andExpect(jsonPath("true", is(updateAnswer.getTrue())));
+                .andExpect(jsonPath("question", is(updateAnswer.getQuestionId().intValue())))
+                .andExpect(jsonPath("true", is(updateAnswer.isTrue())));
 
         answerService.deleteAnswerById(updateAnswer.getId()).orElseThrow();
     }
@@ -100,8 +100,8 @@ class AnswerControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(id)))
                 .andExpect(jsonPath("text", is(createAnswer.getText())))
-                .andExpect(jsonPath("question", is(createAnswer.getQuestion().intValue())))
-                .andExpect(jsonPath("true", is(createAnswer.getTrue())));
+                .andExpect(jsonPath("question", is(createAnswer.getQuestionId().intValue())))
+                .andExpect(jsonPath("true", is(createAnswer.isTrue())));
         answerService.deleteAnswerById(newAnswer.getId());
     }
 
@@ -109,7 +109,7 @@ class AnswerControllerTest {
         AnswerEntity answer = new AnswerEntity();
         answer.setId(id);
         answer.setText(text);
-        answer.setQuestion(question);
+        answer.setQuestionId(question);
         answer.setTrue(isTrue);
         return answer;
     }

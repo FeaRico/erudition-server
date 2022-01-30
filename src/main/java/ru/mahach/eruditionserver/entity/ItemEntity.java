@@ -41,7 +41,7 @@ public class ItemEntity {
     private String imagePath;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "item")
+    @JoinColumn(name = "item_id")
     List<QuestionEntity> questions = new ArrayList<>();
 
     public Long getId() {

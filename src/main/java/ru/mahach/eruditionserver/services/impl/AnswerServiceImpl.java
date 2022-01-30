@@ -36,8 +36,8 @@ public class AnswerServiceImpl implements AnswerService {
         AnswerEntity answerToUpdate = answerRepository.findById(answer.getId())
                 .orElseThrow(() -> new AnswerNotFoundException(answer.getId()));
         answerToUpdate.setText(answer.getText());
-        answerToUpdate.setQuestion(answer.getQuestion());
-        answerToUpdate.setTrue(answer.getTrue());
+        answerToUpdate.setQuestionId(answer.getQuestionId());
+        answerToUpdate.setTrue(answer.isTrue());
         return Optional.of(answerRepository.save(answerToUpdate));
     }
 
