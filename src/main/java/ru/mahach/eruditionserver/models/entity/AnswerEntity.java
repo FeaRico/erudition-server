@@ -1,4 +1,4 @@
-package ru.mahach.eruditionserver.entity;
+package ru.mahach.eruditionserver.models.entity;
 
 import javax.persistence.*;
 import java.util.Objects;

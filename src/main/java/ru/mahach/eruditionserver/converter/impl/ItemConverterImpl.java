@@ -3,8 +3,8 @@ package ru.mahach.eruditionserver.converter.impl;
 import org.springframework.stereotype.Component;
 import ru.mahach.eruditionserver.converter.ItemConverter;
 import ru.mahach.eruditionserver.converter.QuestionConverter;
-import ru.mahach.eruditionserver.dto.ItemDto;
-import ru.mahach.eruditionserver.entity.ItemEntity;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
+import ru.mahach.eruditionserver.models.entity.ItemEntity;
 
 import java.util.List;
 import java.util.function.Function;

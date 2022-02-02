@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.mahach.eruditionserver.entity.QuestionEntity;
+import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.services.QuestionService;
 import java.util.Optional;
 

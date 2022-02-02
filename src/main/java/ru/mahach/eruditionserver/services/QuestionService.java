@@ -1,6 +1,6 @@
 package ru.mahach.eruditionserver.services;
 
-import ru.mahach.eruditionserver.entity.QuestionEntity;
+import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 
 import java.util.Collection;
 import java.util.Optional;

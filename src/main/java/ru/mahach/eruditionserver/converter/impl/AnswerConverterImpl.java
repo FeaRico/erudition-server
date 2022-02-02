@@ -2,8 +2,8 @@ package ru.mahach.eruditionserver.converter.impl;
 
 import org.springframework.stereotype.Component;
 import ru.mahach.eruditionserver.converter.AnswerConverter;
-import ru.mahach.eruditionserver.dto.AnswerDto;
-import ru.mahach.eruditionserver.entity.AnswerEntity;
+import ru.mahach.eruditionserver.models.dto.AnswerDto;
+import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 
 import java.util.Collections;
 import java.util.List;

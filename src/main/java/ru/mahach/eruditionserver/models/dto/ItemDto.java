@@ -1,9 +1,6 @@
-package ru.mahach.eruditionserver.dto;
+package ru.mahach.eruditionserver.models.dto;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 public class ItemDto {
     private Long id;

@@ -1,7 +1,7 @@
 package ru.mahach.eruditionserver.converter;
 
-import ru.mahach.eruditionserver.dto.QuestionDto;
-import ru.mahach.eruditionserver.entity.QuestionEntity;
+import ru.mahach.eruditionserver.models.dto.QuestionDto;
+import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 
 import java.util.List;
 

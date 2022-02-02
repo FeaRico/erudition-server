@@ -1,4 +1,4 @@
-package ru.mahach.eruditionserver.dto;
+package ru.mahach.eruditionserver.models.dto;
 
 public class AnswerDto {
     private Long id;

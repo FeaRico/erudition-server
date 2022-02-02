@@ -1,4 +1,4 @@
-package ru.mahach.eruditionserver.dto;
+package ru.mahach.eruditionserver.models.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.ItemNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.ItemException;
-import ru.mahach.eruditionserver.entity.ItemEntity;
+import ru.mahach.eruditionserver.models.entity.ItemEntity;
 import ru.mahach.eruditionserver.services.ItemService;
 
 import java.util.Collection;

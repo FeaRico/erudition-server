@@ -3,7 +3,7 @@ package ru.mahach.eruditionserver.services;
 import java.util.Collection;
 import java.util.Optional;
 
-import ru.mahach.eruditionserver.entity.ItemEntity;
+import ru.mahach.eruditionserver.models.entity.ItemEntity;
 
 /**
  * Интерфейс сервиса {@link ItemEntity}

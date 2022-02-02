@@ -1,7 +1,7 @@
 package ru.mahach.eruditionserver.converter;
 
-import ru.mahach.eruditionserver.dto.ItemDto;
-import ru.mahach.eruditionserver.entity.ItemEntity;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
+import ru.mahach.eruditionserver.models.entity.ItemEntity;
 
 import java.util.List;
 
