@@ -4,10 +4,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.QuestionException;
+import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.services.QuestionService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/v1/questions")
@@ -21,26 +23,26 @@ public class QuestionController {
     }
 
     @PostMapping
-    public ResponseEntity<QuestionEntity> createQuestion(@RequestBody QuestionEntity question){
+    public ResponseEntity<QuestionDto> createQuestion(@RequestBody QuestionDto question){
         return ResponseEntity.ok(questionService.createQuestion(question)
                 .orElseThrow(() -> new QuestionException("Failed to create question")));
     }
 
     @PutMapping
-    public ResponseEntity<QuestionEntity> updateQuestion(@RequestBody QuestionEntity question){
+    public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto question){
         return ResponseEntity.ok(questionService.updateQuestion(question)
                 .orElseThrow(() -> new QuestionException("Failed to update question")));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<QuestionEntity> deleteQuestion(@PathVariable Long id){
+    public ResponseEntity<QuestionDto> deleteQuestion(@PathVariable Long id){
         return ResponseEntity.ok(questionService.deleteQuestionById(id)
                 .orElseThrow(() -> new QuestionException("Failed to delete question")));
     }
 
     @GetMapping("/")
-    public ResponseEntity<Collection<QuestionEntity>> allQuestion(){
-        Collection<QuestionEntity> result = questionService.questionFindAll();
+    public ResponseEntity<List<QuestionDto>> allQuestion(){
+        List<QuestionDto> result = questionService.questionFindAll();
         if(result.isEmpty()){
             throw new QuestionNotFoundException();
         }
@@ -48,7 +50,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionEntity> questionById(@PathVariable Long id){
+    public ResponseEntity<QuestionDto> questionById(@PathVariable Long id){
         return ResponseEntity.ok(questionService.questionFindById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id)));
     }

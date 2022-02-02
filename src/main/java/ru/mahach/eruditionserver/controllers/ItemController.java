@@ -4,10 +4,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.ItemNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.ItemException;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
 import ru.mahach.eruditionserver.models.entity.ItemEntity;
 import ru.mahach.eruditionserver.services.ItemService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/v1/items")
@@ -21,26 +23,26 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemEntity> createItem(@RequestBody ItemEntity item){
+    public ResponseEntity<ItemDto> createItem(@RequestBody ItemDto item){
         return ResponseEntity.ok(itemService.createItem(item)
                 .orElseThrow(() -> new ItemException("Failed to create item")));
     }
 
     @PutMapping
-    public ResponseEntity<ItemEntity> updateItem(@RequestBody ItemEntity item){
+    public ResponseEntity<ItemDto> updateItem(@RequestBody ItemDto item){
         return ResponseEntity.ok(itemService.updateItem(item)
                 .orElseThrow(() -> new ItemException("Failed to update item")));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ItemEntity> deleteItem(@PathVariable Long id){
+    public ResponseEntity<ItemDto> deleteItem(@PathVariable Long id){
         return ResponseEntity.ok(itemService.deleteItemById(id)
                 .orElseThrow(() -> new ItemException("Failed to delete item")));
     }
 
     @GetMapping("/")
-    public ResponseEntity<Collection<ItemEntity>> allItems(){
-        Collection<ItemEntity> result = itemService.itemFindAll();
+    public ResponseEntity<List<ItemDto>> allItems(){
+        List<ItemDto> result = itemService.itemFindAll();
         if(result.isEmpty()){
             throw new ItemNotFoundException();
         }
@@ -48,7 +50,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemEntity> itemById(@PathVariable Long id){
+    public ResponseEntity<ItemDto> itemById(@PathVariable Long id){
         return ResponseEntity.ok(itemService.itemFindById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id)));
     }
