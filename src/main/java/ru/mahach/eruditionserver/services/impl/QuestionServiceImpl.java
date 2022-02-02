@@ -2,12 +2,14 @@ package ru.mahach.eruditionserver.services.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mahach.eruditionserver.converter.QuestionConverter;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
+import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.repository.QuestionRepository;
 import ru.mahach.eruditionserver.services.QuestionService;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,43 +22,55 @@ import java.util.Optional;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final QuestionConverter questionConverter;
 
-    public QuestionServiceImpl(QuestionRepository questionRepository) {
+    public QuestionServiceImpl(QuestionRepository questionRepository, QuestionConverter questionConverter) {
         this.questionRepository = questionRepository;
+        this.questionConverter = questionConverter;
     }
 
     @Override
-    public Optional<QuestionEntity> createQuestion(QuestionEntity question) {
-        return Optional.of(questionRepository.save(question));
+    public Optional<QuestionDto> createQuestion(QuestionDto question) {
+        QuestionEntity saveEntity = questionRepository.save(questionConverter.dtoToEntity(question));
+
+        return Optional.of(questionConverter.entityToDto(saveEntity));
     }
 
     @Override
-    public Optional<QuestionEntity> updateQuestion(QuestionEntity question) {
+    public Optional<QuestionDto> updateQuestion(QuestionDto question) {
         QuestionEntity questionToUpdate = questionRepository.findById(question.getId())
                 .orElseThrow(() -> new QuestionNotFoundException(question.getId()));
+
         questionToUpdate.setText(question.getText());
         questionToUpdate.setItemId(question.getItemId());
         questionToUpdate.setImagePath(question.getImagePath());
-        return Optional.of(questionRepository.save(questionToUpdate));
+
+        return Optional.of(questionConverter.entityToDto(questionRepository.save(questionToUpdate)));
     }
 
     @Override
-    public Optional<QuestionEntity> deleteQuestionById(Long id) {
+    public Optional<QuestionDto> deleteQuestionById(Long id) {
         QuestionEntity questionToDelete = questionRepository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));
         questionRepository.deleteById(id);
-        return Optional.of(questionToDelete);
+
+        return Optional.of(questionConverter.entityToDto(questionToDelete));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<QuestionEntity> questionFindById(Long id) {
-        return questionRepository.findById(id);
+    public Optional<QuestionDto> questionFindById(Long id) {
+        QuestionEntity findQuestion = questionRepository.findById(id)
+                .orElseThrow(() -> new QuestionNotFoundException(id));
+
+        return Optional.of(questionConverter.entityToDto(findQuestion));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<QuestionEntity> questionFindAll() {
-        return questionRepository.findAll();
+    public List<QuestionDto> questionFindAll() {
+        List<QuestionEntity> findQuestions = questionRepository.findAll();
+
+        return questionConverter.entityToDto(findQuestions);
     }
 }

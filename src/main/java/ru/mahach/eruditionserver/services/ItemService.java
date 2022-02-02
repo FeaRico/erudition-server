@@ -1,25 +1,26 @@
 package ru.mahach.eruditionserver.services;
 
-import java.util.Collection;
-import java.util.Optional;
-
+import ru.mahach.eruditionserver.models.dto.ItemDto;
 import ru.mahach.eruditionserver.models.entity.ItemEntity;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Интерфейс сервиса {@link ItemEntity}
+ *
  * @author Makhach Abdulazizov
  * @version 1.0
  */
 public interface ItemService {
 
-    Optional<ItemEntity> createItem(ItemEntity item);
+    Optional<ItemDto> createItem(ItemDto item);
 
-    Optional<ItemEntity> updateItem(ItemEntity item);
+    Optional<ItemDto> updateItem(ItemDto item);
 
-    Optional<ItemEntity> deleteItemById(Long id);
+    Optional<ItemDto> deleteItemById(Long id);
 
-    Optional<ItemEntity> itemFindById(Long id);
+    Optional<ItemDto> itemFindById(Long id);
 
-    Collection<ItemEntity> itemFindAll();
-
+    List<ItemDto> itemFindAll();
 }
