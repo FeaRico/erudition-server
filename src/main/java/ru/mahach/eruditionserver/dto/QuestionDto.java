@@ -12,12 +12,12 @@ public class QuestionDto {
     private String imagePath;
     private List<AnswerDto> answers;
 
-    QuestionDto(Long id, String text, Long itemId, String imagePath, List<AnswerDto> answers) {
-        this.id = id;
-        this.text = text;
-        this.itemId = itemId;
-        this.imagePath = imagePath;
-        this.answers = answers;
+    QuestionDto(Builder builder) {
+        this.id = builder.id;
+        this.text = builder.text;
+        this.itemId = builder.itemId;
+        this.imagePath = builder.imagePath;
+        this.answers = builder.answers;
     }
 
     public Long getId() {
@@ -40,37 +40,34 @@ public class QuestionDto {
         return answers;
     }
 
-    public static class QuestionDtoBuilder {
+    public static class Builder {
         private Long id;
         private String text;
         private Long itemId;
         private String imagePath;
         private List<AnswerDto> answers;
 
-        QuestionDtoBuilder() {
-        }
-
-        QuestionDtoBuilder setId(Long id) {
+        public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        QuestionDtoBuilder setText(String text) {
+        public Builder setText(String text) {
             this.text = text;
             return this;
         }
 
-        QuestionDtoBuilder setItemId(Long itemId) {
+        public Builder setItemId(Long itemId) {
             this.itemId = itemId;
             return this;
         }
 
-        QuestionDtoBuilder setImagePath(String imagePath) {
+        public Builder setImagePath(String imagePath) {
             this.imagePath = imagePath;
             return this;
         }
 
-        QuestionDtoBuilder setAnswers(List<AnswerDto> answers) {
+        public Builder setAnswers(List<AnswerDto> answers) {
             if (isNull(answers))
                 answers = new ArrayList<>();
 
@@ -78,8 +75,8 @@ public class QuestionDto {
             return this;
         }
 
-        QuestionDto build() {
-            return new QuestionDto(id, text, itemId, imagePath, answers);
+        public QuestionDto build() {
+            return new QuestionDto(this);
         }
     }
 }
