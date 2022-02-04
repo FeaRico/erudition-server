@@ -43,9 +43,6 @@ public class ItemController {
     @GetMapping("/")
     public ResponseEntity<List<ItemDto>> allItems(){
         List<ItemDto> result = itemService.itemFindAll();
-        if(result.isEmpty()){
-            throw new ItemNotFoundException();
-        }
         return ResponseEntity.ok(result);
     }
 

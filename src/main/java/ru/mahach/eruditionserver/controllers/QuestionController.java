@@ -43,9 +43,6 @@ public class QuestionController {
     @GetMapping("/")
     public ResponseEntity<List<QuestionDto>> allQuestion(){
         List<QuestionDto> result = questionService.questionFindAll();
-        if(result.isEmpty()){
-            throw new QuestionNotFoundException();
-        }
         return ResponseEntity.ok(result);
     }
 

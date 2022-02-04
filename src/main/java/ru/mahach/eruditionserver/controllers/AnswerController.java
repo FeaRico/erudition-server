@@ -40,12 +40,9 @@ public class AnswerController {
                 .orElseThrow(() -> new AnswerException("Failed to delete answer")));
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<AnswerDto>> allAnswer(){
         List<AnswerDto> result = answerService.answerFindAll();
-        if(result.isEmpty()){
-            throw new AnswerNotFoundException();
-        }
         return ResponseEntity.ok(result);
     }
 
