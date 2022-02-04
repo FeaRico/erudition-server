@@ -34,19 +34,19 @@ public class QuestionController {
                 .orElseThrow(() -> new QuestionException("Failed to update question")));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<QuestionDto> deleteQuestion(@PathVariable Long id){
         return ResponseEntity.ok(questionService.deleteQuestionById(id)
                 .orElseThrow(() -> new QuestionException("Failed to delete question")));
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<QuestionDto>> allQuestion(){
         List<QuestionDto> result = questionService.questionFindAll();
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<QuestionDto> questionById(@PathVariable Long id){
         return ResponseEntity.ok(questionService.questionFindById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id)));

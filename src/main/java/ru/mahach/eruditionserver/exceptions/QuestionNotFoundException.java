@@ -17,7 +17,7 @@ public class QuestionNotFoundException extends QuestionException {
     }
 
     public QuestionNotFoundException(Long id){
-        this("Question with " + id + " id not found");
+        this("Question with id = " + id + " not found");
     }
 
 }

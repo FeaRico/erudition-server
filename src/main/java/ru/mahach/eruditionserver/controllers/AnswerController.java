@@ -34,7 +34,7 @@ public class AnswerController {
                 .orElseThrow(() -> new AnswerException("Failed to update answer")));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<AnswerDto> deleteAnswer(@PathVariable Long id){
         return ResponseEntity.ok(answerService.deleteAnswerById(id)
                 .orElseThrow(() -> new AnswerException("Failed to delete answer")));
@@ -46,7 +46,7 @@ public class AnswerController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<AnswerDto> answerById(@PathVariable Long id){
         return ResponseEntity.ok(answerService.answerFindById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id)));

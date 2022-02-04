@@ -17,6 +17,6 @@ public class ItemNotFoundException extends ItemException {
     }
 
     public ItemNotFoundException(Long id){
-        this("Item with " + id + " not found");
+        this("Item with id = " + id + " not found");
     }
 }

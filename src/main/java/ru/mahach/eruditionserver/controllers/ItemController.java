@@ -5,10 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.ItemNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.ItemException;
 import ru.mahach.eruditionserver.models.dto.ItemDto;
-import ru.mahach.eruditionserver.models.entity.ItemEntity;
 import ru.mahach.eruditionserver.services.ItemService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -34,19 +32,19 @@ public class ItemController {
                 .orElseThrow(() -> new ItemException("Failed to update item")));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<ItemDto> deleteItem(@PathVariable Long id){
         return ResponseEntity.ok(itemService.deleteItemById(id)
                 .orElseThrow(() -> new ItemException("Failed to delete item")));
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<ItemDto>> allItems(){
         List<ItemDto> result = itemService.itemFindAll();
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<ItemDto> itemById(@PathVariable Long id){
         return ResponseEntity.ok(itemService.itemFindById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id)));

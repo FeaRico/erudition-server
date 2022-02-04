@@ -17,5 +17,5 @@ public class AnswerNotFoundException extends AnswerException {
     }
 
     public AnswerNotFoundException(Long id){
-        this("Answer with " + id + "not found");
+        this("Answer with id = " + id + "not found");
     }}
