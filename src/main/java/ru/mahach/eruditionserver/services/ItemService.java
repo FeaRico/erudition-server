@@ -13,14 +13,13 @@ import java.util.Optional;
  * @version 1.0
  */
 public interface ItemService {
+    Optional<ItemDto> create(ItemDto item);
 
-    Optional<ItemDto> createItem(ItemDto item);
+    Optional<ItemDto> update(ItemDto item);
 
-    Optional<ItemDto> updateItem(ItemDto item);
+    Optional<ItemDto> deleteById(Long id);
 
-    Optional<ItemDto> deleteItemById(Long id);
+    Optional<ItemDto> getById(Long id);
 
-    Optional<ItemDto> itemFindById(Long id);
-
-    List<ItemDto> itemFindAll();
+    List<ItemDto> getAll();
 }

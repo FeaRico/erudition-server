@@ -14,14 +14,13 @@ import java.util.Optional;
  */
 
 public interface AnswerService {
+    Optional<AnswerDto> create(AnswerDto answer);
 
-    Optional<AnswerDto> createAnswer(AnswerDto answer);
+    Optional<AnswerDto> update(AnswerDto answer);
 
-    Optional<AnswerDto> updateAnswer(AnswerDto answer);
+    Optional<AnswerDto> deleteById(Long id);
 
-    Optional<AnswerDto> deleteAnswerById(Long id);
+    Optional<AnswerDto> getById(Long id);
 
-    Optional<AnswerDto> answerFindById(Long id);
-
-    List<AnswerDto> answerFindAll();
+    List<AnswerDto> getAll();
 }

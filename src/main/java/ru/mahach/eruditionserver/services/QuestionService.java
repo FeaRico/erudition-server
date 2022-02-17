@@ -13,14 +13,13 @@ import java.util.Optional;
  * @version 1.0
  */
 public interface QuestionService {
+    Optional<QuestionDto> create(QuestionDto question);
 
-    Optional<QuestionDto> createQuestion(QuestionDto question);
+    Optional<QuestionDto> update(QuestionDto question);
 
-    Optional<QuestionDto> updateQuestion(QuestionDto question);
+    Optional<QuestionDto> deleteById(Long id);
 
-    Optional<QuestionDto> deleteQuestionById(Long id);
+    Optional<QuestionDto> getById(Long id);
 
-    Optional<QuestionDto> questionFindById(Long id);
-
-    List<QuestionDto> questionFindAll();
+    List<QuestionDto> getAll();
 }

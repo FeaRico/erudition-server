@@ -5,10 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.AnswerNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.AnswerException;
 import ru.mahach.eruditionserver.models.dto.AnswerDto;
-import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 import ru.mahach.eruditionserver.services.AnswerService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -24,31 +22,31 @@ public class AnswerController {
 
     @PostMapping
     public ResponseEntity<AnswerDto> createAnswer(@RequestBody AnswerDto answer){
-        return ResponseEntity.ok(answerService.createAnswer(answer)
+        return ResponseEntity.ok(answerService.create(answer)
                 .orElseThrow(() -> new AnswerException("Failed to create answer")));
     }
 
     @PutMapping
     public ResponseEntity<AnswerDto> updateAnswer(@RequestBody AnswerDto answer){
-        return ResponseEntity.ok(answerService.updateAnswer(answer)
+        return ResponseEntity.ok(answerService.update(answer)
                 .orElseThrow(() -> new AnswerException("Failed to update answer")));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<AnswerDto> deleteAnswer(@PathVariable Long id){
-        return ResponseEntity.ok(answerService.deleteAnswerById(id)
+        return ResponseEntity.ok(answerService.deleteById(id)
                 .orElseThrow(() -> new AnswerException("Failed to delete answer")));
     }
 
     @GetMapping
     public ResponseEntity<List<AnswerDto>> allAnswer(){
-        List<AnswerDto> result = answerService.answerFindAll();
+        List<AnswerDto> result = answerService.getAll();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<AnswerDto> answerById(@PathVariable Long id){
-        return ResponseEntity.ok(answerService.answerFindById(id)
+        return ResponseEntity.ok(answerService.getById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id)));
     }
 }

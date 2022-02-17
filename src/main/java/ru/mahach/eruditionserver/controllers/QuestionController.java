@@ -5,10 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.QuestionException;
 import ru.mahach.eruditionserver.models.dto.QuestionDto;
-import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.services.QuestionService;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -24,31 +22,31 @@ public class QuestionController {
 
     @PostMapping
     public ResponseEntity<QuestionDto> createQuestion(@RequestBody QuestionDto question){
-        return ResponseEntity.ok(questionService.createQuestion(question)
+        return ResponseEntity.ok(questionService.create(question)
                 .orElseThrow(() -> new QuestionException("Failed to create question")));
     }
 
     @PutMapping
     public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto question){
-        return ResponseEntity.ok(questionService.updateQuestion(question)
+        return ResponseEntity.ok(questionService.update(question)
                 .orElseThrow(() -> new QuestionException("Failed to update question")));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<QuestionDto> deleteQuestion(@PathVariable Long id){
-        return ResponseEntity.ok(questionService.deleteQuestionById(id)
+        return ResponseEntity.ok(questionService.deleteById(id)
                 .orElseThrow(() -> new QuestionException("Failed to delete question")));
     }
 
     @GetMapping
     public ResponseEntity<List<QuestionDto>> allQuestion(){
-        List<QuestionDto> result = questionService.questionFindAll();
+        List<QuestionDto> result = questionService.getAll();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<QuestionDto> questionById(@PathVariable Long id){
-        return ResponseEntity.ok(questionService.questionFindById(id)
+        return ResponseEntity.ok(questionService.getById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id)));
     }
 }

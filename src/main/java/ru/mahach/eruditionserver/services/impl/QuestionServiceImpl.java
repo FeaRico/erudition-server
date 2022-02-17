@@ -14,6 +14,7 @@ import java.util.Optional;
 
 /**
  * Реализация сервиса {@link QuestionService}
+ *
  * @author Makhach Abdulazizov
  * @version 1.0
  */
@@ -30,26 +31,23 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Optional<QuestionDto> createQuestion(QuestionDto question) {
+    public Optional<QuestionDto> create(QuestionDto question) {
         QuestionEntity saveEntity = questionRepository.save(questionConverter.dtoToEntity(question));
 
         return Optional.of(questionConverter.entityToDto(saveEntity));
     }
 
     @Override
-    public Optional<QuestionDto> updateQuestion(QuestionDto question) {
-        QuestionEntity questionToUpdate = questionRepository.findById(question.getId())
+    public Optional<QuestionDto> update(QuestionDto question) {
+        questionRepository.findById(question.getId())
                 .orElseThrow(() -> new QuestionNotFoundException(question.getId()));
+        QuestionEntity questionEntity = questionConverter.dtoToEntity(question);
 
-        questionToUpdate.setText(question.getText());
-        questionToUpdate.setItemId(question.getItemId());
-        questionToUpdate.setImagePath(question.getImagePath());
-
-        return Optional.of(questionConverter.entityToDto(questionRepository.save(questionToUpdate)));
+        return Optional.of(questionConverter.entityToDto(questionRepository.save(questionEntity)));
     }
 
     @Override
-    public Optional<QuestionDto> deleteQuestionById(Long id) {
+    public Optional<QuestionDto> deleteById(Long id) {
         QuestionEntity questionToDelete = questionRepository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));
         questionRepository.deleteById(id);
@@ -59,7 +57,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<QuestionDto> questionFindById(Long id) {
+    public Optional<QuestionDto> getById(Long id) {
         QuestionEntity findQuestion = questionRepository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));
 
@@ -68,7 +66,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuestionDto> questionFindAll() {
+    public List<QuestionDto> getAll() {
         List<QuestionEntity> findQuestions = questionRepository.findAll();
 
         return questionConverter.entityToDto(findQuestions);

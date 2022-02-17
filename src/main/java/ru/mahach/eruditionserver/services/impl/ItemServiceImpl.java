@@ -31,25 +31,23 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<ItemDto> createItem(ItemDto item) {
+    public Optional<ItemDto> create(ItemDto item) {
         ItemEntity saveEntity = itemRepository.save(itemConverter.dtoToEntity(item));
 
         return Optional.of(itemConverter.entityToDto(saveEntity));
     }
 
     @Override
-    public Optional<ItemDto> updateItem(ItemDto item) {
-        ItemEntity itemToUpdate = itemRepository.findById(item.getId())
+    public Optional<ItemDto> update(ItemDto item) {
+          itemRepository.findById(item.getId())
                 .orElseThrow(() -> new ItemNotFoundException(item.getId()));
+        ItemEntity itemEntity = itemConverter.dtoToEntity(item);
 
-        itemToUpdate.setName(item.getName());
-        itemToUpdate.setImagePath(item.getImagePath());
-
-        return Optional.of(itemConverter.entityToDto(itemRepository.save(itemToUpdate)));
+        return Optional.of(itemConverter.entityToDto(itemRepository.save(itemEntity)));
     }
 
     @Override
-    public Optional<ItemDto> deleteItemById(Long id) {
+    public Optional<ItemDto> deleteById(Long id) {
         ItemEntity itemToDelete = itemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
         itemRepository.deleteById(id);
@@ -59,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<ItemDto> itemFindById(Long id) {
+    public Optional<ItemDto> getById(Long id) {
         ItemEntity findEntity = itemRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
 
@@ -68,7 +66,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ItemDto> itemFindAll() {
+    public List<ItemDto> getAll() {
         List<ItemEntity> findItems = itemRepository.findAll();
 
         return itemConverter.entityToDto(findItems);
