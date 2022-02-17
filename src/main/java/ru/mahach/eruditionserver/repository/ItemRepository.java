@@ -6,5 +6,4 @@ import ru.mahach.eruditionserver.models.entity.ItemEntity;
 
 @Repository
 public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
-
 }

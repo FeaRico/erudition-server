@@ -3,7 +3,6 @@ package ru.mahach.eruditionserver.exceptions;
 import ru.mahach.eruditionserver.exceptions.base.AnswerException;
 
 public class AnswerNotFoundException extends AnswerException {
-
     public AnswerNotFoundException(String message) {
         super(message);
     }
@@ -12,10 +11,11 @@ public class AnswerNotFoundException extends AnswerException {
         super(message, err);
     }
 
-    public AnswerNotFoundException(){
+    public AnswerNotFoundException() {
         this("Answer not found");
     }
 
-    public AnswerNotFoundException(Long id){
+    public AnswerNotFoundException(Long id) {
         this("Answer with id = " + id + "not found");
-    }}
+    }
+}

@@ -1,7 +1,6 @@
 package ru.mahach.eruditionserver.exceptions.base;
 
-public class ItemException extends RuntimeException{
-    
+public class ItemException extends RuntimeException {
     public ItemException(String message) {
         super(message);
     }

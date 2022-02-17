@@ -21,7 +21,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class QuestionServiceImpl implements QuestionService {
-
     private final QuestionRepository questionRepository;
     private final QuestionConverter questionConverter;
 

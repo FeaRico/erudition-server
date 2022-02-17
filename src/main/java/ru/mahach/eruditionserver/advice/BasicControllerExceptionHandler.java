@@ -13,28 +13,29 @@ import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
 
 /**
  * Обработчик исключений
+ *
  * @author Makhach Abdulazizov
  * @version 1.0
  */
 @RestControllerAdvice
-public class BasicControllerExceptionHandler extends ResponseEntityExceptionHandler{
+public class BasicControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ItemNotFoundException.class})
-    public ResponseEntity<Object> itemNotFoundException(ItemNotFoundException ex, WebRequest request){
+    public ResponseEntity<Object> itemNotFoundException(ItemNotFoundException ex, WebRequest request) {
         String body = "Item controller error: " + ex.getMessage();
         return handleExceptionInternal(ex, body,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler({QuestionNotFoundException.class})
-    public ResponseEntity<Object> questionNotFoundException(QuestionNotFoundException ex, WebRequest request){
+    public ResponseEntity<Object> questionNotFoundException(QuestionNotFoundException ex, WebRequest request) {
         String body = "Question controller error: " + ex.getMessage();
         return handleExceptionInternal(ex, body,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler({AnswerNotFoundException.class})
-    public ResponseEntity<Object> answerNotFoundException(AnswerNotFoundException ex, WebRequest request){
+    public ResponseEntity<Object> answerNotFoundException(AnswerNotFoundException ex, WebRequest request) {
         String body = "Answer controller error: " + ex.getMessage();
         return handleExceptionInternal(ex, body,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);

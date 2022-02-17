@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping(value = "api/v1/questions")
 @CrossOrigin(value = "http://localhost:4200", allowCredentials = "true")
 public class QuestionController {
-
     private final QuestionService questionService;
 
     public QuestionController(QuestionService questionService) {
@@ -21,31 +20,33 @@ public class QuestionController {
     }
 
     @PostMapping
-    public ResponseEntity<QuestionDto> createQuestion(@RequestBody QuestionDto question){
+    public ResponseEntity<QuestionDto> createQuestion(@RequestBody QuestionDto question) {
         return ResponseEntity.ok(questionService.create(question)
                 .orElseThrow(() -> new QuestionException("Failed to create question")));
     }
 
     @PutMapping
-    public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto question){
+    public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto question) {
         return ResponseEntity.ok(questionService.update(question)
-                .orElseThrow(() -> new QuestionException("Failed to update question")));
+                .orElseThrow(() -> new QuestionException("Failed to update question with id = " +
+                        question.getId())));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<QuestionDto> deleteQuestion(@PathVariable Long id){
+    public ResponseEntity<QuestionDto> deleteQuestion(@PathVariable Long id) {
         return ResponseEntity.ok(questionService.deleteById(id)
-                .orElseThrow(() -> new QuestionException("Failed to delete question")));
+                .orElseThrow(() ->
+                        new QuestionException("Failed to delete question with id = " + id)));
     }
 
     @GetMapping
-    public ResponseEntity<List<QuestionDto>> allQuestion(){
+    public ResponseEntity<List<QuestionDto>> allQuestions() {
         List<QuestionDto> result = questionService.getAll();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<QuestionDto> questionById(@PathVariable Long id){
+    public ResponseEntity<QuestionDto> questionById(@PathVariable Long id) {
         return ResponseEntity.ok(questionService.getById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id)));
     }

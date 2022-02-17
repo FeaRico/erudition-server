@@ -25,7 +25,6 @@ public class AnswerConverterImpl implements AnswerConverter {
         return answerEntity;
     };
 
-
     @Override
     public AnswerDto entityToDto(AnswerEntity answerEntity) {
         return entityToDto.apply(answerEntity);
@@ -33,7 +32,7 @@ public class AnswerConverterImpl implements AnswerConverter {
 
     @Override
     public List<AnswerDto> entityToDto(List<AnswerEntity> entities) {
-        if(entities.isEmpty())
+        if (entities.isEmpty())
             return Collections.emptyList();
 
         return entities.stream().map(this::entityToDto).collect(Collectors.toList());
@@ -46,7 +45,7 @@ public class AnswerConverterImpl implements AnswerConverter {
 
     @Override
     public List<AnswerEntity> dtoToEntity(List<AnswerDto> dtos) {
-        if(dtos.isEmpty())
+        if (dtos.isEmpty())
             return Collections.emptyList();
 
         return dtos.stream().map(this::dtoToEntity).collect(Collectors.toList());

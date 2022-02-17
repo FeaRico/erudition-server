@@ -22,7 +22,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class AnswerServiceImpl implements AnswerService {
-
     private final AnswerRepository answerRepository;
     private final AnswerConverter answerConverter;
 

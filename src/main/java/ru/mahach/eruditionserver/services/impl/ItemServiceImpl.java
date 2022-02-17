@@ -21,7 +21,6 @@ import java.util.Optional;
 @Service
 @Transactional
 public class ItemServiceImpl implements ItemService {
-
     private final ItemRepository itemRepository;
     private final ItemConverter itemConverter;
 
@@ -39,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Optional<ItemDto> update(ItemDto item) {
-          itemRepository.findById(item.getId())
+        itemRepository.findById(item.getId())
                 .orElseThrow(() -> new ItemNotFoundException(item.getId()));
         ItemEntity itemEntity = itemConverter.dtoToEntity(item);
 

@@ -19,7 +19,7 @@ public class ItemConverterImpl implements ItemConverter {
     }
 
     Function<ItemEntity, ItemDto> entityToDto = entity -> new ItemDto(
-      entity.getId(), entity.getName(), entity.getImagePath(),
+            entity.getId(), entity.getName(), entity.getImagePath(),
             questionConverter.entityToDto(entity.getQuestions())
     );
 

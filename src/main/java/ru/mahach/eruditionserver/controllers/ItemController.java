@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping(value = "api/v1/items")
 @CrossOrigin(value = "http://localhost:4200", allowCredentials = "true")
 public class ItemController {
-
     private final ItemService itemService;
 
     public ItemController(ItemService itemService) {
@@ -21,31 +20,31 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<ItemDto> createItem(@RequestBody ItemDto item){
+    public ResponseEntity<ItemDto> createItem(@RequestBody ItemDto item) {
         return ResponseEntity.ok(itemService.create(item)
                 .orElseThrow(() -> new ItemException("Failed to create item")));
     }
 
     @PutMapping
-    public ResponseEntity<ItemDto> updateItem(@RequestBody ItemDto item){
+    public ResponseEntity<ItemDto> updateItem(@RequestBody ItemDto item) {
         return ResponseEntity.ok(itemService.update(item)
-                .orElseThrow(() -> new ItemException("Failed to update item")));
+                .orElseThrow(() -> new ItemException("Failed to update item with id = " + item.getId())));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ItemDto> deleteItem(@PathVariable Long id){
+    public ResponseEntity<ItemDto> deleteItem(@PathVariable Long id) {
         return ResponseEntity.ok(itemService.deleteById(id)
-                .orElseThrow(() -> new ItemException("Failed to delete item")));
+                .orElseThrow(() -> new ItemException("Failed to delete item with id = " + id)));
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemDto>> allItems(){
+    public ResponseEntity<List<ItemDto>> allItems() {
         List<ItemDto> result = itemService.getAll();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ItemDto> itemById(@PathVariable Long id){
+    public ResponseEntity<ItemDto> itemById(@PathVariable Long id) {
         return ResponseEntity.ok(itemService.getById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id)));
     }

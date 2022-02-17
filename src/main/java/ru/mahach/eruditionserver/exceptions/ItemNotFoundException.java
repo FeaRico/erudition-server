@@ -3,7 +3,6 @@ package ru.mahach.eruditionserver.exceptions;
 import ru.mahach.eruditionserver.exceptions.base.ItemException;
 
 public class ItemNotFoundException extends ItemException {
-
     public ItemNotFoundException(String message) {
         super(message);
     }
@@ -12,11 +11,11 @@ public class ItemNotFoundException extends ItemException {
         super(message, err);
     }
 
-    public ItemNotFoundException(){
+    public ItemNotFoundException() {
         this("Item not found");
     }
 
-    public ItemNotFoundException(Long id){
+    public ItemNotFoundException(Long id) {
         this("Item with id = " + id + " not found");
     }
 }
