@@ -4,37 +4,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import ru.mahach.eruditionserver.exceptions.base.ItemException;
 import ru.mahach.eruditionserver.models.dto.ItemDto;
 import ru.mahach.eruditionserver.models.entity.ItemEntity;
 import ru.mahach.eruditionserver.repository.ItemRepository;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@ActiveProfiles("test") //TODO: убрать в конфиги
 @Transactional
 class ItemServiceTest {
     private final ItemRepository itemRepository;
     private final ItemService itemService;
 
-    private final Supplier<ItemDto> createItemDto = () -> {
-        Random random = new Random();
-        return new ItemDto(random.nextLong(), "test",
-                "test/path", Collections.emptyList());
-    };
-
     private final Supplier<ItemDto> createItemDtoWithoutId = () -> new ItemDto(null, "test",
-            "test/path", Collections.emptyList());
-
+            "test/path");
 
     @Autowired
     ItemServiceTest(ItemRepository itemRepository, ItemService itemService) {
@@ -48,7 +42,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void createItem() {
+    void create() {
         ItemDto itemDto = createItemDtoWithoutId.get();
 
         Optional<ItemDto> itemDtoOptional = itemService.create(itemDto);
@@ -63,7 +57,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void updateItem() {
+    void update() {
         ItemDto itemDto = createItemDtoWithoutId.get();
 
         Optional<ItemDto> itemDtoOptional = itemService.create(itemDto);
@@ -71,7 +65,7 @@ class ItemServiceTest {
         assertNotNull(savedDto.getId());
 
         ItemDto toUpdateItemDto = new ItemDto(savedDto.getId(), "updateTest",
-                "new/path", savedDto.getQuestions());
+                "new/path");
         Optional<ItemDto> itemDtoOptionalUpdate = itemService.update(toUpdateItemDto);
 
         ItemDto updatedItem = itemDtoOptionalUpdate
@@ -83,7 +77,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void deleteItemById() {
+    void deleteById() {
         ItemDto itemDto = createItemDtoWithoutId.get();
 
         Optional<ItemDto> itemDtoOptional = itemService.create(itemDto);
@@ -105,13 +99,12 @@ class ItemServiceTest {
     }
 
     @Test
-    void itemFindById() {
+    void getById() {
         ItemDto itemDto = createItemDtoWithoutId.get();
 
         Optional<ItemDto> itemDtoOptional = itemService.create(itemDto);
         ItemDto savedItem = itemDtoOptional
                 .orElseThrow(() -> new ItemException("Can't create item"));
-
         assertNotNull(savedItem.getId());
 
         Optional<ItemDto> foundItemOptional = itemService.getById(savedItem.getId());
@@ -122,7 +115,7 @@ class ItemServiceTest {
     }
 
     @Test
-    void itemFindAll() {
+    void getAll() {
         List<ItemDto> itemDtos = IntStream.range(0, 3)
                 .mapToObj(i -> createItemDtoWithoutId.get())
                 .collect(Collectors.toList());
@@ -144,13 +137,11 @@ class ItemServiceTest {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getImagePath(), actual.getImagePath());
-        assertEquals(expected.getQuestions(), actual.getQuestions());
     }
 
     private void equalsItems(ItemDto expected, ItemEntity actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getImagePath(), actual.getImagePath());
-        assertEquals(expected.getQuestions(), actual.getQuestions());
     }
 }
