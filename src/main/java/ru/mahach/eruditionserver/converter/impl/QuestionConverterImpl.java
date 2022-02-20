@@ -1,7 +1,7 @@
 package ru.mahach.eruditionserver.converter.impl;
 
 import org.springframework.stereotype.Component;
-import ru.mahach.eruditionserver.converter.AnswerConverter;
+import ru.mahach.eruditionserver.converter.ItemConverter;
 import ru.mahach.eruditionserver.converter.QuestionConverter;
 import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.models.entity.QuestionEntity;
@@ -12,27 +12,25 @@ import java.util.stream.Collectors;
 
 @Component
 public class QuestionConverterImpl implements QuestionConverter {
-    private AnswerConverter answerConverter;
+    private ItemConverter itemConverter;
 
-    public QuestionConverterImpl(AnswerConverter answerConverter) {
-        this.answerConverter = answerConverter;
+    public QuestionConverterImpl(ItemConverter itemConverter) {
+        this.itemConverter = itemConverter;
     }
 
     Function<QuestionEntity, QuestionDto> entityToDto = entity -> new QuestionDto.Builder()
             .setId(entity.getId())
             .setText(entity.getText())
-            .setItemId(entity.getItemId())
             .setImagePath(entity.getImagePath())
-            .setAnswers(answerConverter.entityToDto(entity.getAnswers()))
+            .setItem(itemConverter.entityToDto(entity.getItem()))
             .build();
 
     Function<QuestionDto, QuestionEntity> dtoToEntity = dto -> {
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setId(dto.getId());
         questionEntity.setText(dto.getText());
-        questionEntity.setItemId(dto.getItemId());
         questionEntity.setImagePath(dto.getImagePath());
-        questionEntity.setAnswers(answerConverter.dtoToEntity(dto.getAnswers()));
+        questionEntity.setItem(itemConverter.dtoToEntity(dto.getItem()));
 
         return questionEntity;
     };

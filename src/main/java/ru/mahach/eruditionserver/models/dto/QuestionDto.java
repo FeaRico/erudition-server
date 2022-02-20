@@ -1,23 +1,18 @@
 package ru.mahach.eruditionserver.models.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
+import java.util.Objects;
 
 public class QuestionDto {
-    private Long id;
-    private String text;
-    private Long itemId;
-    private String imagePath;
-    private List<AnswerDto> answers;
+    private final Long id;
+    private final String text;
+    private final ItemDto item;
+    private final String imagePath;
 
     QuestionDto(Builder builder) {
         this.id = builder.id;
         this.text = builder.text;
-        this.itemId = builder.itemId;
+        this.item = builder.item;
         this.imagePath = builder.imagePath;
-        this.answers = builder.answers;
     }
 
     public Long getId() {
@@ -28,24 +23,19 @@ public class QuestionDto {
         return text;
     }
 
-    public Long getItemId() {
-        return itemId;
-    }
-
     public String getImagePath() {
         return imagePath;
     }
 
-    public List<AnswerDto> getAnswers() {
-        return answers;
+    public ItemDto getItem() {
+        return item;
     }
 
     public static class Builder {
         private Long id;
         private String text;
-        private Long itemId;
+        private ItemDto item;
         private String imagePath;
-        private List<AnswerDto> answers;
 
         public Builder setId(Long id) {
             this.id = id;
@@ -57,26 +47,41 @@ public class QuestionDto {
             return this;
         }
 
-        public Builder setItemId(Long itemId) {
-            this.itemId = itemId;
-            return this;
-        }
-
         public Builder setImagePath(String imagePath) {
             this.imagePath = imagePath;
             return this;
         }
 
-        public Builder setAnswers(List<AnswerDto> answers) {
-            if (isNull(answers))
-                answers = new ArrayList<>();
-
-            this.answers = answers;
+        public Builder setItem(ItemDto item) {
+            this.item = item;
             return this;
         }
 
         public QuestionDto build() {
             return new QuestionDto(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionDto that = (QuestionDto) o;
+        return id.equals(that.id) && text.equals(that.text) && item.equals(that.item) && Objects.equals(imagePath, that.imagePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, item, imagePath);
+    }
+
+    @Override
+    public String toString() {
+        return "QuestionDto{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", item=" + item +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
     }
 }

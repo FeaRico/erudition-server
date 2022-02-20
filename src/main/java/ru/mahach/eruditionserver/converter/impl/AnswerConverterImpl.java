@@ -1,7 +1,9 @@
 package ru.mahach.eruditionserver.converter.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.mahach.eruditionserver.converter.AnswerConverter;
+import ru.mahach.eruditionserver.converter.QuestionConverter;
 import ru.mahach.eruditionserver.models.dto.AnswerDto;
 import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 
@@ -12,8 +14,11 @@ import java.util.stream.Collectors;
 
 @Component
 public class AnswerConverterImpl implements AnswerConverter {
+    private QuestionConverter questionConverter;
+
     Function<AnswerEntity, AnswerDto> entityToDto = entity -> new AnswerDto(
-            entity.getId(), entity.getText(), entity.getQuestionId(), entity.isTrue()
+            entity.getId(), entity.getText(),
+            entity.isTrue(), questionConverter.entityToDto(entity.getQuestion())
     );
 
     Function<AnswerDto, AnswerEntity> dtoToEntity = dto -> {
@@ -21,9 +26,14 @@ public class AnswerConverterImpl implements AnswerConverter {
         answerEntity.setId(dto.getId());
         answerEntity.setText(dto.getText());
         answerEntity.setTrue(dto.isTrue());
-        answerEntity.setQuestionId(dto.getQuestionId());
+        answerEntity.setQuestion(questionConverter.dtoToEntity(dto.getQuestion()));
         return answerEntity;
     };
+
+    @Autowired
+    public AnswerConverterImpl(QuestionConverter questionConverter) {
+        this.questionConverter = questionConverter;
+    }
 
     @Override
     public AnswerDto entityToDto(AnswerEntity answerEntity) {

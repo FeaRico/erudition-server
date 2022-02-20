@@ -1,18 +1,16 @@
 package ru.mahach.eruditionserver.models.dto;
 
-import java.util.List;
+import java.util.Objects;
 
 public class ItemDto {
-    private Long id;
-    private String name;
-    private String imagePath;
-    private List<QuestionDto> questions;
+    private final Long id;
+    private final String name;
+    private final String imagePath;
 
-    public ItemDto(Long id, String name, String imagePath, List<QuestionDto> questions) {
+    public ItemDto(Long id, String name, String imagePath) {
         this.id = id;
         this.name = name;
         this.imagePath = imagePath;
-        this.questions = questions;
     }
 
     public Long getId() {
@@ -27,7 +25,25 @@ public class ItemDto {
         return imagePath;
     }
 
-    public List<QuestionDto> getQuestions() {
-        return questions;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemDto itemDto = (ItemDto) o;
+        return id.equals(itemDto.id) && name.equals(itemDto.name) && Objects.equals(imagePath, itemDto.imagePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, imagePath);
+    }
+
+    @Override
+    public String toString() {
+        return "ItemDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                '}';
     }
 }

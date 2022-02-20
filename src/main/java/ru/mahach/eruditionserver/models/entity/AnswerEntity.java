@@ -32,16 +32,14 @@ public class AnswerEntity {
     private String text;
 
     @Column(
-            name = "question_id",
-            nullable = false
-    )
-    private Long questionId;
-
-    @Column(
             name = "is_true",
             nullable = false
     )
     private Boolean isTrue;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "question_id")
+    private QuestionEntity question;
 
     public Long getId() {
         return id;
@@ -59,14 +57,6 @@ public class AnswerEntity {
         this.text = text;
     }
 
-    public Long getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(Long question) {
-        this.questionId = question;
-    }
-
     public Boolean isTrue() {
         return isTrue;
     }
@@ -75,26 +65,34 @@ public class AnswerEntity {
         this.isTrue = isTrue;
     }
 
+    public QuestionEntity getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(QuestionEntity question) {
+        this.question = question;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AnswerEntity answer = (AnswerEntity) o;
-        return id.equals(answer.id) && text.equals(answer.text) && questionId.equals(answer.questionId) && isTrue.equals(answer.isTrue);
+        AnswerEntity that = (AnswerEntity) o;
+        return id.equals(that.id) && text.equals(that.text) && isTrue.equals(that.isTrue) && question.equals(that.question);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, questionId, isTrue);
+        return Objects.hash(id, text, isTrue, question);
     }
 
     @Override
     public String toString() {
-        return "Answer{" +
+        return "AnswerEntity{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", question=" + questionId +
-                ", is_true=" + isTrue +
+                ", isTrue=" + isTrue +
+                ", question=" + question +
                 '}';
     }
 }

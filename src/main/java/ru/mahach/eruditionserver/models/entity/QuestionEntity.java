@@ -1,8 +1,6 @@
 package ru.mahach.eruditionserver.models.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -34,19 +32,13 @@ public class QuestionEntity {
     private String text;
 
     @Column(
-            name = "item_id",
-            nullable = false
-    )
-    private Long itemId;
-
-    @Column(
             name = "image_path"
     )
     private String imagePath;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "question_id")
-    private List<AnswerEntity> answers = new ArrayList<>();
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "item_id")
+    private ItemEntity item;
 
     public Long getId() {
         return id;
@@ -64,14 +56,6 @@ public class QuestionEntity {
         this.text = text;
     }
 
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Long item) {
-        this.itemId = item;
-    }
-
     public String getImagePath() {
         return imagePath;
     }
@@ -80,34 +64,34 @@ public class QuestionEntity {
         this.imagePath = imagePath;
     }
 
-    public List<AnswerEntity> getAnswers() {
-        return answers;
+    public ItemEntity getItem() {
+        return item;
     }
 
-    public void setAnswers(List<AnswerEntity> answers) {
-        this.answers = answers;
+    public void setItem(ItemEntity item) {
+        this.item = item;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        QuestionEntity question = (QuestionEntity) o;
-        return id.equals(question.id) && text.equals(question.text) && itemId.equals(question.itemId);
+        QuestionEntity that = (QuestionEntity) o;
+        return id.equals(that.id) && text.equals(that.text) && Objects.equals(imagePath, that.imagePath) && item.equals(that.item);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, itemId);
+        return Objects.hash(id, text, imagePath, item);
     }
 
     @Override
     public String toString() {
-        return "Question{" +
+        return "QuestionEntity{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", item=" + itemId +
                 ", imagePath='" + imagePath + '\'' +
+                ", item=" + item +
                 '}';
     }
 }

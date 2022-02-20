@@ -1,14 +1,11 @@
 package ru.mahach.eruditionserver.models.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "items")
 public class ItemEntity {
-
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -40,10 +37,6 @@ public class ItemEntity {
     )
     private String imagePath;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "item_id")
-    List<QuestionEntity> questions = new ArrayList<>();
-
     public Long getId() {
         return id;
     }
@@ -66,14 +59,6 @@ public class ItemEntity {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    public List<QuestionEntity> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<QuestionEntity> questions) {
-        this.questions = questions;
     }
 
     @Override
