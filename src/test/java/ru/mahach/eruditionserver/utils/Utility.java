@@ -11,17 +11,15 @@ import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Utility {
-    public static AnswerDto createAnswerDto() {
-        QuestionDto questionDto = createQuestionDto();
-        return new AnswerDto(null, "testAnswer", true, questionDto);
+    public static AnswerDto createAnswerDto(QuestionDto savedQuestion) {
+        return new AnswerDto(null, "testAnswer", true, savedQuestion);
     }
 
-    public static QuestionDto createQuestionDto() {
-        ItemDto item = createItemDto();
+    public static QuestionDto createQuestionDto(ItemDto savedItem) {
         return new QuestionDto.Builder()
                 .setText("testQuestion")
                 .setImagePath("test/path/quest")
-                .setItem(item)
+                .setItem(savedItem)
                 .build();
     }
 

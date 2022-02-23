@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
+import ru.mahach.eruditionserver.exceptions.base.ItemException;
 import ru.mahach.eruditionserver.exceptions.base.QuestionException;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
 import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.repository.QuestionRepository;
@@ -27,11 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class QuestionServiceTest {
     private final QuestionRepository questionRepository;
     private final QuestionService questionService;
+    private final ItemService itemService;
 
     @Autowired
-    QuestionServiceTest(QuestionRepository questionRepository, QuestionService questionService) {
+    QuestionServiceTest(QuestionRepository questionRepository, QuestionService questionService, ItemService itemService) {
         this.questionRepository = questionRepository;
         this.questionService = questionService;
+        this.itemService = itemService;
     }
 
     @BeforeEach
@@ -41,7 +45,7 @@ class QuestionServiceTest {
 
     @Test
     void itShouldCreateQuestion() {
-        QuestionDto questionDto = Utility.createQuestionDto();
+        QuestionDto questionDto = Utility.createQuestionDto(saveItemAndReturn());
 
         Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
@@ -56,7 +60,7 @@ class QuestionServiceTest {
 
     @Test
     void itShouldUpdateQuestion() {
-        QuestionDto questionDto = Utility.createQuestionDto();
+        QuestionDto questionDto = Utility.createQuestionDto(saveItemAndReturn());
 
         Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
@@ -81,7 +85,7 @@ class QuestionServiceTest {
 
     @Test
     void itShouldDeleteQuestionById() {
-        QuestionDto questionDto = Utility.createQuestionDto();
+        QuestionDto questionDto = Utility.createQuestionDto(saveItemAndReturn());
 
         Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
@@ -102,7 +106,7 @@ class QuestionServiceTest {
 
     @Test
     void itShouldGetQuestionById() {
-        QuestionDto questionDto = Utility.createQuestionDto();
+        QuestionDto questionDto = Utility.createQuestionDto(saveItemAndReturn());
 
         Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
@@ -119,7 +123,7 @@ class QuestionServiceTest {
     @Test
     void itShouldGetAllQuestions() {
         List<QuestionDto> questionDtos = IntStream.range(0, 3)
-                .mapToObj(i -> Utility.createQuestionDto())
+                .mapToObj(i -> Utility.createQuestionDto(saveItemAndReturn()))
                 .collect(Collectors.toList());
 
         List<QuestionDto> savedDtos = questionDtos.stream()
@@ -133,5 +137,11 @@ class QuestionServiceTest {
         assertEquals(3, foundQuestions.size());
 
         IntStream.range(0, 3).forEach(i -> Utility.equalsQuestions(savedDtos.get(i), foundQuestions.get(i)));
+    }
+
+    private ItemDto saveItemAndReturn() {
+        Optional<ItemDto> saveItemOptional = itemService.createItem(Utility.createItemDto());
+        return saveItemOptional
+                .orElseThrow(() -> new ItemException("Can't save item"));
     }
 }

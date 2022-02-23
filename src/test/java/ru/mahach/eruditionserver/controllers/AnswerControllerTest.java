@@ -10,9 +10,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.mahach.eruditionserver.exceptions.base.AnswerException;
+import ru.mahach.eruditionserver.exceptions.base.ItemException;
+import ru.mahach.eruditionserver.exceptions.base.QuestionException;
 import ru.mahach.eruditionserver.models.dto.AnswerDto;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
+import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.repository.AnswerRepository;
 import ru.mahach.eruditionserver.services.AnswerService;
+import ru.mahach.eruditionserver.services.ItemService;
+import ru.mahach.eruditionserver.services.QuestionService;
 import ru.mahach.eruditionserver.utils.Utility;
 
 import java.util.Optional;
@@ -29,12 +35,16 @@ class AnswerControllerTest {
     private final MockMvc mvc;
     private final AnswerRepository answerRepository;
     private final AnswerService answerService;
+    private final ItemService itemService;
+    private final QuestionService questionService;
 
     @Autowired
-    AnswerControllerTest(MockMvc mvc, AnswerRepository answerRepository, AnswerService answerService) {
+    AnswerControllerTest(MockMvc mvc, AnswerRepository answerRepository, AnswerService answerService, ItemService itemService, QuestionService questionService) {
         this.mvc = mvc;
         this.answerRepository = answerRepository;
         this.answerService = answerService;
+        this.itemService = itemService;
+        this.questionService = questionService;
     }
 
     @BeforeEach
@@ -44,7 +54,7 @@ class AnswerControllerTest {
 
     @Test
     void itShouldCreateAnswer() throws Exception {
-        AnswerDto createAnswer = Utility.createAnswerDto();
+        AnswerDto createAnswer = Utility.createAnswerDto(saveQuestionAndReturn());
 
         mvc.perform(post("/api/v1/answers")
                 .content(Utility.objectToJsonString(createAnswer))
@@ -62,7 +72,7 @@ class AnswerControllerTest {
 
     @Test
     void itShouldUpdateAnswer() throws Exception {
-        AnswerDto createAnswer = Utility.createAnswerDto();
+        AnswerDto createAnswer = Utility.createAnswerDto(saveQuestionAndReturn());
 
         Optional<AnswerDto> answerOptional = answerService.createAnswer(createAnswer);
         AnswerDto savedAnswer = answerOptional
@@ -85,7 +95,7 @@ class AnswerControllerTest {
 
     @Test
     void itShouldDeleteAnswer() throws Exception {
-        AnswerDto createAnswer = Utility.createAnswerDto();
+        AnswerDto createAnswer = Utility.createAnswerDto(saveQuestionAndReturn());
 
         Optional<AnswerDto> answerOptional = answerService.createAnswer(createAnswer);
         AnswerDto savedAnswer = answerOptional
@@ -102,7 +112,7 @@ class AnswerControllerTest {
 
     @Test
     void itShouldGetAnswerById() throws Exception {
-        AnswerDto createAnswer = Utility.createAnswerDto();
+        AnswerDto createAnswer = Utility.createAnswerDto(saveQuestionAndReturn());
 
         Optional<AnswerDto> answerOptional = answerService.createAnswer(createAnswer);
         AnswerDto savedAnswer = answerOptional
@@ -119,5 +129,16 @@ class AnswerControllerTest {
                 .andExpect(jsonPath("text", is(savedAnswer.getText())))
                 .andExpect(jsonPath("question.id", is(savedAnswer.getQuestion().getId().intValue())))
                 .andExpect(jsonPath("isTrue", is(savedAnswer.getIsTrue())));
+    }
+
+    private QuestionDto saveQuestionAndReturn(){
+        Optional<ItemDto> saveItemOptional = itemService.createItem(Utility.createItemDto());
+        ItemDto savedItem = saveItemOptional
+                .orElseThrow(() -> new ItemException("Can't save item"));
+        Optional<QuestionDto> saveQuestionOptional = questionService
+                .createQuestion(Utility.createQuestionDto(savedItem));
+
+        return saveQuestionOptional
+                .orElseThrow(() -> new QuestionException("Can't save question"));
     }
 }

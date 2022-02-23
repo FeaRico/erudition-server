@@ -9,9 +9,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.mahach.eruditionserver.exceptions.base.ItemException;
 import ru.mahach.eruditionserver.exceptions.base.QuestionException;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
 import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.repository.QuestionRepository;
+import ru.mahach.eruditionserver.services.ItemService;
 import ru.mahach.eruditionserver.services.QuestionService;
 import ru.mahach.eruditionserver.utils.Utility;
 
@@ -29,12 +32,14 @@ class QuestionControllerTest {
     private final MockMvc mvc;
     private final QuestionRepository questionRepository;
     private final QuestionService questionService;
+    private final ItemService itemService;
 
     @Autowired
-    QuestionControllerTest(MockMvc mvc, QuestionRepository questionRepository, QuestionService questionService) {
+    QuestionControllerTest(MockMvc mvc, QuestionRepository questionRepository, QuestionService questionService, ItemService itemService) {
         this.mvc = mvc;
         this.questionRepository = questionRepository;
         this.questionService = questionService;
+        this.itemService = itemService;
     }
 
     @BeforeEach
@@ -44,7 +49,7 @@ class QuestionControllerTest {
 
     @Test
     void itShouldCreateQuestion() throws Exception {
-        QuestionDto createQuestion = Utility.createQuestionDto();
+        QuestionDto createQuestion = Utility.createQuestionDto(saveItemAndReturn());
 
         mvc.perform(post("/api/v1/questions")
                 .content(Utility.objectToJsonString(createQuestion))
@@ -62,7 +67,7 @@ class QuestionControllerTest {
 
     @Test
     void itShouldUpdateQuestion() throws Exception {
-        QuestionDto createQuestion = Utility.createQuestionDto();
+        QuestionDto createQuestion = Utility.createQuestionDto(saveItemAndReturn());
 
         Optional<QuestionDto> questionOptional = questionService.createQuestion(createQuestion);
         QuestionDto savedQuestion = questionOptional
@@ -89,7 +94,7 @@ class QuestionControllerTest {
 
     @Test
     void itShouldDeleteQuestion() throws Exception {
-        QuestionDto createQuestion = Utility.createQuestionDto();
+        QuestionDto createQuestion = Utility.createQuestionDto(saveItemAndReturn());
 
         Optional<QuestionDto> questionOptional = questionService.createQuestion(createQuestion);
         QuestionDto savedQuestion = questionOptional
@@ -107,7 +112,7 @@ class QuestionControllerTest {
 
     @Test
     void itShouldGetQuestionById() throws Exception {
-        QuestionDto createQuestion = Utility.createQuestionDto();
+        QuestionDto createQuestion = Utility.createQuestionDto(saveItemAndReturn());
 
         Optional<QuestionDto> questionOptional = questionService.createQuestion(createQuestion);
         QuestionDto savedQuestion = questionOptional
@@ -124,5 +129,11 @@ class QuestionControllerTest {
                 .andExpect(jsonPath("text", is(savedQuestion.getText())))
                 .andExpect(jsonPath("item.id", is(savedQuestion.getItem().getId().intValue())))
                 .andExpect(jsonPath("imagePath", is(savedQuestion.getImagePath())));
+    }
+
+    private ItemDto saveItemAndReturn(){
+        Optional<ItemDto> saveItemOptional = itemService.createItem(Utility.createItemDto());
+        return saveItemOptional
+                .orElseThrow(() -> new ItemException("Can't save item"));
     }
 }

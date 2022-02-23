@@ -7,7 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mahach.eruditionserver.exceptions.AnswerNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.AnswerException;
+import ru.mahach.eruditionserver.exceptions.base.ItemException;
+import ru.mahach.eruditionserver.exceptions.base.QuestionException;
 import ru.mahach.eruditionserver.models.dto.AnswerDto;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
+import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 import ru.mahach.eruditionserver.repository.AnswerRepository;
 import ru.mahach.eruditionserver.utils.Utility;
@@ -27,11 +31,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class AnswerServiceTest {
     private final AnswerRepository answerRepository;
     private final AnswerService answerService;
+    private final QuestionService questionService;
+    private final ItemService itemService;
 
     @Autowired
-    public AnswerServiceTest(AnswerRepository answerRepository, AnswerService answerService) {
+    public AnswerServiceTest(AnswerRepository answerRepository, AnswerService answerService, QuestionService questionService, ItemService itemService) {
         this.answerRepository = answerRepository;
         this.answerService = answerService;
+        this.questionService = questionService;
+        this.itemService = itemService;
     }
 
     @BeforeEach
@@ -41,7 +49,7 @@ class AnswerServiceTest {
 
     @Test
     void itShouldCreateAnswer() {
-        AnswerDto answerDto = Utility.createAnswerDto();
+        AnswerDto answerDto = Utility.createAnswerDto(saveQuestionAndReturn());
         Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedAnswer = answerDtoOptional
                 .orElseThrow(() -> new AnswerException("Can't create answer"));
@@ -55,7 +63,7 @@ class AnswerServiceTest {
 
     @Test
     void itShouldUpdateAnswer() {
-        AnswerDto answerDto = Utility.createAnswerDto();
+        AnswerDto answerDto = Utility.createAnswerDto(saveQuestionAndReturn());
 
         Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedDto = answerDtoOptional
@@ -75,7 +83,7 @@ class AnswerServiceTest {
 
     @Test
     void itShouldDeleteAnswerById() {
-        AnswerDto answerDto = Utility.createAnswerDto();
+        AnswerDto answerDto = Utility.createAnswerDto(saveQuestionAndReturn());
 
         Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedAnswer = answerDtoOptional
@@ -96,7 +104,7 @@ class AnswerServiceTest {
 
     @Test
     void itShouldGetAnswerById() {
-        AnswerDto answerDto = Utility.createAnswerDto();
+        AnswerDto answerDto = Utility.createAnswerDto(saveQuestionAndReturn());
 
         Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedAnswer = answerDtoOptional
@@ -113,7 +121,7 @@ class AnswerServiceTest {
     @Test
     void itShouldGetAllAnswers() {
         List<AnswerDto> answerDtos = IntStream.range(0, 3)
-                .mapToObj(i -> Utility.createAnswerDto())
+                .mapToObj(i -> Utility.createAnswerDto(saveQuestionAndReturn()))
                 .collect(Collectors.toList());
 
         List<AnswerDto> savedDtos = answerDtos.stream()
@@ -127,5 +135,16 @@ class AnswerServiceTest {
         assertEquals(3, foundAnswers.size());
 
         IntStream.range(0, 3).forEach(i -> Utility.equalsAnswers(savedDtos.get(i), foundAnswers.get(i)));
+    }
+
+    private QuestionDto saveQuestionAndReturn(){
+        Optional<ItemDto> saveItemOptional = itemService.createItem(Utility.createItemDto());
+        ItemDto savedItem = saveItemOptional
+                .orElseThrow(() -> new ItemException("Can't save item"));
+        Optional<QuestionDto> saveQuestionOptional = questionService
+                .createQuestion(Utility.createQuestionDto(savedItem));
+
+        return saveQuestionOptional
+                .orElseThrow(() -> new QuestionException("Can't save question"));
     }
 }
