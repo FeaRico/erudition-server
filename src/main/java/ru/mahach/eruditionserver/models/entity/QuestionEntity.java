@@ -36,7 +36,7 @@ public class QuestionEntity {
     )
     private String imagePath;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private ItemEntity item;
 

@@ -1,11 +1,25 @@
 package ru.mahach.eruditionserver.models.dto;
 
+import ru.mahach.eruditionserver.validation.Marker;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.Objects;
 
 public class QuestionDto {
+    @Null(groups = Marker.Create.class)
+    @NotNull(groups = Marker.Update.class)
+    @Min(value = 1, groups = Marker.Update.class)
     private Long id;
+
+    @NotBlank
     private String text;
+
     private ItemDto item;
+
     private String imagePath;
 
     public QuestionDto() {

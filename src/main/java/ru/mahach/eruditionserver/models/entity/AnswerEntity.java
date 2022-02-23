@@ -37,7 +37,7 @@ public class AnswerEntity {
     )
     private Boolean isTrue;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
