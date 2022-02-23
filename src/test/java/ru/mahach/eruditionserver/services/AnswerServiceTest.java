@@ -8,10 +8,9 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.mahach.eruditionserver.exceptions.AnswerNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.AnswerException;
 import ru.mahach.eruditionserver.models.dto.AnswerDto;
-import ru.mahach.eruditionserver.models.dto.ItemDto;
-import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.models.entity.AnswerEntity;
 import ru.mahach.eruditionserver.repository.AnswerRepository;
+import ru.mahach.eruditionserver.utils.Utility;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -41,9 +40,9 @@ class AnswerServiceTest {
     }
 
     @Test
-    void create() {
-        AnswerDto answerDto = createAnswerDto(11111);
-        Optional<AnswerDto> answerDtoOptional = answerService.create(answerDto);
+    void itShouldCreateAnswer() {
+        AnswerDto answerDto = Utility.createAnswerDto();
+        Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedAnswer = answerDtoOptional
                 .orElseThrow(() -> new AnswerException("Can't create answer"));
         assertNotNull(savedAnswer.getId());
@@ -51,34 +50,34 @@ class AnswerServiceTest {
         List<AnswerEntity> foundAnswers = answerRepository.findAll();
         assertEquals(1, foundAnswers.size());
 
-        equalsAnswers(savedAnswer, foundAnswers.get(0));
+        Utility.equalsAnswers(savedAnswer, foundAnswers.get(0));
     }
 
     @Test
-    void update() {
-        AnswerDto answerDto = createAnswerDto(22222);
+    void itShouldUpdateAnswer() {
+        AnswerDto answerDto = Utility.createAnswerDto();
 
-        Optional<AnswerDto> answerDtoOptional = answerService.create(answerDto);
+        Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedDto = answerDtoOptional
                 .orElseThrow(() -> new AnswerException("Can't create answer"));
         assertNotNull(savedDto.getId());
 
         AnswerDto toUpdateAnswerDto = new AnswerDto(savedDto.getId(), "updatedNameAnswer", true, savedDto.getQuestion());
-        Optional<AnswerDto> answerDtoOptionalUpdate = answerService.update(toUpdateAnswerDto);
+        Optional<AnswerDto> answerDtoOptionalUpdate = answerService.updateAnswer(toUpdateAnswerDto);
 
         AnswerDto updatedAnswer = answerDtoOptionalUpdate
                 .orElseThrow(() -> new AnswerException("Can't update item with id = " + savedDto.getId()));
 
         AnswerEntity foundAnswer = answerRepository.getById(updatedAnswer.getId());
 
-        equalsAnswers(updatedAnswer, foundAnswer);
+        Utility.equalsAnswers(updatedAnswer, foundAnswer);
     }
 
     @Test
-    void deleteById() {
-        AnswerDto answerDto = createAnswerDto(33333);
+    void itShouldDeleteAnswerById() {
+        AnswerDto answerDto = Utility.createAnswerDto();
 
-        Optional<AnswerDto> answerDtoOptional = answerService.create(answerDto);
+        Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedAnswer = answerDtoOptional
                 .orElseThrow(() -> new AnswerException("Can't create answer"));
         assertNotNull(savedAnswer.getId());
@@ -86,72 +85,47 @@ class AnswerServiceTest {
         List<AnswerEntity> foundAnswersBefore = answerRepository.findAll();
         assertEquals(1, foundAnswersBefore.size());
 
-        Optional<AnswerDto> deletedAnswerOptional = answerService.deleteById(savedAnswer.getId());
+        Optional<AnswerDto> deletedAnswerOptional = answerService.deleteAnswerById(savedAnswer.getId());
         AnswerDto deletedAnswer = deletedAnswerOptional
                 .orElseThrow(() -> new AnswerException("Can't delete answer with id = " + savedAnswer.getId()));
-        equalsAnswers(savedAnswer, deletedAnswer);
+        Utility.equalsAnswers(savedAnswer, deletedAnswer);
 
         List<AnswerEntity> foundAnswerAfter = answerRepository.findAll();
         assertEquals(0, foundAnswerAfter.size());
     }
 
     @Test
-    void getById() {
-        AnswerDto answerDto = createAnswerDto(44444);
+    void itShouldGetAnswerById() {
+        AnswerDto answerDto = Utility.createAnswerDto();
 
-        Optional<AnswerDto> answerDtoOptional = answerService.create(answerDto);
+        Optional<AnswerDto> answerDtoOptional = answerService.createAnswer(answerDto);
         AnswerDto savedAnswer = answerDtoOptional
                 .orElseThrow(() -> new AnswerException("Can't create answer"));
         assertNotNull(savedAnswer.getId());
 
-        Optional<AnswerDto> foundAnswerOptional = answerService.getById(savedAnswer.getId());
+        Optional<AnswerDto> foundAnswerOptional = answerService.getAnswerById(savedAnswer.getId());
         AnswerDto foundAnswer = foundAnswerOptional
                 .orElseThrow(AnswerNotFoundException::new);
 
-        equalsAnswers(savedAnswer, foundAnswer);
+        Utility.equalsAnswers(savedAnswer, foundAnswer);
     }
 
     @Test
-    void getAll() {
+    void itShouldGetAllAnswers() {
         List<AnswerDto> answerDtos = IntStream.range(0, 3)
-                .mapToObj(i -> createAnswerDto(55555 + i))
+                .mapToObj(i -> Utility.createAnswerDto())
                 .collect(Collectors.toList());
 
         List<AnswerDto> savedDtos = answerDtos.stream()
-                .map(answerService::create)
+                .map(answerService::createAnswer)
                 .map(answerDto -> answerDto
                         .orElseThrow(() -> new AnswerException("Can't create answer")))
                 .collect(Collectors.toList());
         savedDtos.forEach(answer -> assertNotNull(answer.getId()));
 
-        List<AnswerDto> foundAnswers = answerService.getAll();
+        List<AnswerDto> foundAnswers = answerService.getAllAnswers();
         assertEquals(3, foundAnswers.size());
 
-        IntStream.range(0, 3).forEach(i -> equalsAnswers(savedDtos.get(i), foundAnswers.get(i)));
+        IntStream.range(0, 3).forEach(i -> Utility.equalsAnswers(savedDtos.get(i), foundAnswers.get(i)));
     }
-
-    private void equalsAnswers(AnswerDto expected, AnswerDto actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getText(), actual.getText());
-        assertEquals(expected.isTrue(), actual.isTrue());
-        assertEquals(expected.getQuestion(), actual.getQuestion());
-    }
-
-    private void equalsAnswers(AnswerDto expected, AnswerEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getText(), actual.getText());
-        assertEquals(expected.isTrue(), actual.isTrue());
-    }
-
-    private AnswerDto createAnswerDto(int num) {
-        ItemDto itemDto = new ItemDto(null, "testItem", "test/path");
-        QuestionDto questionDto = new QuestionDto.Builder()
-                .setText("testQuestion")
-                .setImagePath("test/qustpath")
-                .setItem(itemDto)
-                .build();
-
-        return new AnswerDto(null, "testAnswer" + num, true, questionDto);
-    }
-
 }

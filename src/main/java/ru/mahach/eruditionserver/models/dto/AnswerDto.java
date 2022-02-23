@@ -3,10 +3,13 @@ package ru.mahach.eruditionserver.models.dto;
 import java.util.Objects;
 
 public class AnswerDto {
-    private final Long id;
-    private final String text;
-    private final Boolean isTrue;
-    private final QuestionDto question;
+    private Long id;
+    private String text;
+    private Boolean isTrue;
+    private QuestionDto question;
+
+    public AnswerDto() {
+    }
 
     public AnswerDto(Long id, String text, Boolean isTrue, QuestionDto question) {
         this.id = id;
@@ -23,7 +26,7 @@ public class AnswerDto {
         return text;
     }
 
-    public Boolean isTrue() {
+    public Boolean getIsTrue() {
         return isTrue;
     }
 

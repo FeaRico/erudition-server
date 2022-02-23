@@ -18,14 +18,14 @@ public class AnswerConverterImpl implements AnswerConverter {
 
     Function<AnswerEntity, AnswerDto> entityToDto = entity -> new AnswerDto(
             entity.getId(), entity.getText(),
-            entity.isTrue(), questionConverter.entityToDto(entity.getQuestion())
+            entity.getIsTrue(), questionConverter.entityToDto(entity.getQuestion())
     );
 
     Function<AnswerDto, AnswerEntity> dtoToEntity = dto -> {
         AnswerEntity answerEntity = new AnswerEntity();
         answerEntity.setId(dto.getId());
         answerEntity.setText(dto.getText());
-        answerEntity.setTrue(dto.isTrue());
+        answerEntity.setIsTrue(dto.getIsTrue());
         answerEntity.setQuestion(questionConverter.dtoToEntity(dto.getQuestion()));
         return answerEntity;
     };

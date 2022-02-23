@@ -3,10 +3,13 @@ package ru.mahach.eruditionserver.models.dto;
 import java.util.Objects;
 
 public class QuestionDto {
-    private final Long id;
-    private final String text;
-    private final ItemDto item;
-    private final String imagePath;
+    private Long id;
+    private String text;
+    private ItemDto item;
+    private String imagePath;
+
+    public QuestionDto() {
+    }
 
     QuestionDto(Builder builder) {
         this.id = builder.id;

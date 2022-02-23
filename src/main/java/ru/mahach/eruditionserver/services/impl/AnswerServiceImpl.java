@@ -31,7 +31,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Optional<AnswerDto> create(AnswerDto answer) {
+    public Optional<AnswerDto> createAnswer(AnswerDto answer) {
         AnswerEntity answerEntity = answerConverter.dtoToEntity(answer);
 
         return Optional.of(answerConverter.entityToDto(answerRepository.save(answerEntity)));
@@ -39,7 +39,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Optional<AnswerDto> update(AnswerDto answer) {
+    public Optional<AnswerDto> updateAnswer(AnswerDto answer) {
         answerRepository.findById(answer.getId())
                 .orElseThrow(() -> new AnswerNotFoundException(answer.getId()));
 
@@ -49,7 +49,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Optional<AnswerDto> deleteById(Long id) {
+    public Optional<AnswerDto> deleteAnswerById(Long id) {
         AnswerEntity answerToDelete = answerRepository.findById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id));
         answerRepository.deleteById(id);
@@ -59,7 +59,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<AnswerDto> getById(Long id) {
+    public Optional<AnswerDto> getAnswerById(Long id) {
         AnswerEntity findAnswer = answerRepository.findById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id));
         return Optional.of(answerConverter.entityToDto(findAnswer));
@@ -67,7 +67,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AnswerDto> getAll() {
+    public List<AnswerDto> getAllAnswers() {
         List<AnswerEntity> findAnswers = answerRepository.findAll();
         return answerConverter.entityToDto(findAnswers);
     }

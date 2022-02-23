@@ -21,31 +21,31 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<ItemDto> createItem(@RequestBody ItemDto item) {
-        return ResponseEntity.ok(itemService.create(item)
+        return ResponseEntity.ok(itemService.createItem(item)
                 .orElseThrow(() -> new ItemException("Failed to create item")));
     }
 
     @PutMapping
     public ResponseEntity<ItemDto> updateItem(@RequestBody ItemDto item) {
-        return ResponseEntity.ok(itemService.update(item)
+        return ResponseEntity.ok(itemService.updateItem(item)
                 .orElseThrow(() -> new ItemException("Failed to update item with id = " + item.getId())));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ItemDto> deleteItem(@PathVariable Long id) {
-        return ResponseEntity.ok(itemService.deleteById(id)
+        return ResponseEntity.ok(itemService.deleteItemById(id)
                 .orElseThrow(() -> new ItemException("Failed to delete item with id = " + id)));
     }
 
     @GetMapping
     public ResponseEntity<List<ItemDto>> allItems() {
-        List<ItemDto> result = itemService.getAll();
+        List<ItemDto> result = itemService.getAllItems();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ItemDto> itemById(@PathVariable Long id) {
-        return ResponseEntity.ok(itemService.getById(id)
+        return ResponseEntity.ok(itemService.getItemById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id)));
     }
 }

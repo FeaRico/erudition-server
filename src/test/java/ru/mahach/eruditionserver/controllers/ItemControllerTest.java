@@ -1,7 +1,6 @@
 package ru.mahach.eruditionserver.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,10 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.mahach.eruditionserver.models.entity.ItemEntity;
+import ru.mahach.eruditionserver.exceptions.base.ItemException;
+import ru.mahach.eruditionserver.models.dto.ItemDto;
+import ru.mahach.eruditionserver.repository.ItemRepository;
 import ru.mahach.eruditionserver.services.ItemService;
+import ru.mahach.eruditionserver.utils.Utility;
 
 import java.util.Optional;
 
@@ -25,17 +26,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class ItemControllerTest {
+    private final MockMvc mvc;
+    private final ItemRepository itemRepository;
+    private final ItemService itemService;
 
     @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private ItemService itemService;
+    public ItemControllerTest(MockMvc mvc, ItemRepository itemRepository, ItemService itemService) {
+        this.mvc = mvc;
+        this.itemRepository = itemRepository;
+        this.itemService = itemService;
+    }
+
+    @BeforeEach
+    void setUp() {
+        itemRepository.deleteAll();
+    }
 
     @Test
-    void shouldCreateItem() throws Exception {
-        ItemEntity createItem = createItem(null, "Математика", "photo\\items\\math.img");
-        MvcResult mvcResult = mvc.perform(post("/api/v1/items")
-                .content(asJsonString(createItem))
+    void itShouldCreateItem() throws Exception {
+        ItemDto createItem = Utility.createItemDto();
+
+        mvc.perform(post("/api/v1/items")
+                .content(Utility.objectToJsonString(createItem))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -45,20 +57,20 @@ class ItemControllerTest {
                 .andExpect(jsonPath("name", is(createItem.getName())))
                 .andExpect(jsonPath("imagePath", is(createItem.getImagePath())))
                 .andReturn();
-
-        String content = mvcResult.getResponse().getContentAsString();
-        Integer createdItemId = JsonPath.read(content, "id");
-        itemService.deleteItemById((long)createdItemId);
     }
 
     @Test
-    void shouldUpdateItem() throws Exception{
-        Optional<ItemEntity> itemOptional = itemService.createItem(createItem(null, "Test", "test_path"));
-        ItemEntity newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
-        ItemEntity updateItem = createItem(newItem.getId(), "TestUpdate", "testPath");
+    void itShouldUpdateItem() throws Exception {
+        ItemDto createItem = Utility.createItemDto();
+
+        Optional<ItemDto> itemOptional = itemService.createItem(createItem);
+        ItemDto savedItem = itemOptional
+                .orElseThrow(() -> new ItemException("Can't create item"));
+
+        ItemDto updateItem = new ItemDto(savedItem.getId(), "newName", "new/path");
 
         mvc.perform(put("/api/v1/items")
-                .content(asJsonString(updateItem))
+                .content(Utility.objectToJsonString(updateItem))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -66,16 +78,17 @@ class ItemControllerTest {
                 .andExpect(jsonPath("id", is(updateItem.getId().intValue())))
                 .andExpect(jsonPath("name", is(updateItem.getName())))
                 .andExpect(jsonPath("imagePath", is(updateItem.getImagePath())));
-
-        itemService.deleteItemById(updateItem.getId()).orElseThrow();
     }
 
     @Test
-    void shouldDeleteItem() throws Exception{
-        ItemEntity createItem = createItem(null, "Test", "textpath");
-        Optional<ItemEntity> itemOptional = itemService.createItem(createItem);
-        ItemEntity newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
-        int id = newItem.getId().intValue();
+    void itShouldDeleteItem() throws Exception {
+        ItemDto createItem = Utility.createItemDto();
+
+        Optional<ItemDto> itemOptional = itemService.createItem(createItem);
+        ItemDto savedItem = itemOptional
+                .orElseThrow(() -> new ItemException("Can't create item"));
+
+        int id = savedItem.getId().intValue();
         mvc.perform(delete("/api/v1/items/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -85,11 +98,14 @@ class ItemControllerTest {
     }
 
     @Test
-    void shouldGetItemById() throws Exception{
-        ItemEntity createItem = createItem(null, "TestName", "TestPath");
-        Optional<ItemEntity> itemOptional = itemService.createItem(createItem);
-        ItemEntity newItem = itemOptional.orElseThrow(IllegalArgumentException::new);
-        int id = newItem.getId().intValue();
+    void itShouldGetItemById() throws Exception {
+        ItemDto createItem = Utility.createItemDto();
+
+        Optional<ItemDto> itemOptional = itemService.createItem(createItem);
+        ItemDto savedItem = itemOptional
+                .orElseThrow(() -> new ItemException("Can't create item"));
+
+        int id = savedItem.getId().intValue();
         mvc.perform(get("/api/v1/items/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -99,23 +115,5 @@ class ItemControllerTest {
                 .andExpect(jsonPath("id", is(id)))
                 .andExpect(jsonPath("name", is(createItem.getName())))
                 .andExpect(jsonPath("imagePath", is(createItem.getImagePath())));
-        itemService.deleteItemById(newItem.getId());
-
-    }
-
-    private ItemEntity createItem(Long id, String name, String imagePath){
-        ItemEntity item = new ItemEntity();
-        item.setId(id);
-        item.setName(name);
-        item.setImagePath(imagePath);
-        return item;
-    }
-
-    static String asJsonString(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
     }
 }

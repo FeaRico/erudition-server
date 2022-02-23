@@ -3,9 +3,12 @@ package ru.mahach.eruditionserver.models.dto;
 import java.util.Objects;
 
 public class ItemDto {
-    private final Long id;
-    private final String name;
-    private final String imagePath;
+    private Long id;
+    private String name;
+    private String imagePath;
+
+    public ItemDto() {
+    }
 
     public ItemDto(Long id, String name, String imagePath) {
         this.id = id;

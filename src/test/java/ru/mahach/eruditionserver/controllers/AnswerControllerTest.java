@@ -1,7 +1,6 @@
 package ru.mahach.eruditionserver.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.mahach.eruditionserver.models.entity.AnswerEntity;
+import ru.mahach.eruditionserver.exceptions.base.AnswerException;
+import ru.mahach.eruditionserver.models.dto.AnswerDto;
+import ru.mahach.eruditionserver.repository.AnswerRepository;
 import ru.mahach.eruditionserver.services.AnswerService;
+import ru.mahach.eruditionserver.utils.Utility;
+
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -24,17 +26,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class AnswerControllerTest {
+    private final MockMvc mvc;
+    private final AnswerRepository answerRepository;
+    private final AnswerService answerService;
 
     @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private AnswerService answerService;
+    AnswerControllerTest(MockMvc mvc, AnswerRepository answerRepository, AnswerService answerService) {
+        this.mvc = mvc;
+        this.answerRepository = answerRepository;
+        this.answerService = answerService;
+    }
+
+    @BeforeEach
+    void setUp() {
+        answerRepository.deleteAll();
+    }
 
     @Test
-    void shouldCreateAnswer() throws Exception{
-        AnswerEntity createAnswer = createAnswer(null, "TextTest", 1L, true);
-        MvcResult mvcResult = mvc.perform(post("/api/v1/answers")
-                .content(asJsonString(createAnswer))
+    void itShouldCreateAnswer() throws Exception {
+        AnswerDto createAnswer = Utility.createAnswerDto();
+
+        mvc.perform(post("/api/v1/answers")
+                .content(Utility.objectToJsonString(createAnswer))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -42,42 +55,43 @@ class AnswerControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("text", is(createAnswer.getText())))
-                .andExpect(jsonPath("question", is(createAnswer.getQuestionId().intValue())))
-                .andExpect(jsonPath("true", is(createAnswer.isTrue())))
+                .andExpect(jsonPath("question.id").exists())
+                .andExpect(jsonPath("isTrue", is(createAnswer.getIsTrue())))
                 .andReturn();
-
-        String content = mvcResult.getResponse().getContentAsString();
-        Integer createdAnswerId = JsonPath.read(content, "id");
-        answerService.deleteAnswerById((long)createdAnswerId);
     }
 
     @Test
-    void shouldUpdateAnswer() throws Exception{
-        Optional<AnswerEntity> answerOptional = answerService.createAnswer(createAnswer(null, "TextTest", 1L, true));
-        AnswerEntity newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
-        AnswerEntity updateAnswer = createAnswer(newAnswer.getId(), "TextTestUpdate", 1L, false);
+    void itShouldUpdateAnswer() throws Exception {
+        AnswerDto createAnswer = Utility.createAnswerDto();
+
+        Optional<AnswerDto> answerOptional = answerService.createAnswer(createAnswer);
+        AnswerDto savedAnswer = answerOptional
+                .orElseThrow(() -> new AnswerException("Can't create answer"));
+
+        AnswerDto updateAnswer = new AnswerDto(savedAnswer.getId(), "newText",
+                false, savedAnswer.getQuestion());
 
         mvc.perform(put("/api/v1/answers")
-                .content(asJsonString(updateAnswer))
+                .content(Utility.objectToJsonString(updateAnswer))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(updateAnswer.getId().intValue())))
                 .andExpect(jsonPath("text", is(updateAnswer.getText())))
-                .andExpect(jsonPath("question", is(updateAnswer.getQuestionId().intValue())))
-                .andExpect(jsonPath("true", is(updateAnswer.isTrue())));
-
-        answerService.deleteAnswerById(updateAnswer.getId()).orElseThrow();
+                .andExpect(jsonPath("question.id", is(updateAnswer.getQuestion().getId().intValue())))
+                .andExpect(jsonPath("isTrue", is(updateAnswer.getIsTrue())));
     }
 
     @Test
-    void shouldDeleteAnswer() throws Exception{
-        AnswerEntity createAnswer = createAnswer(null, "TestText", 1L, true);
-        Optional<AnswerEntity> answerOptional = answerService.createAnswer(createAnswer);
-        AnswerEntity newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
-        int id = newAnswer.getId().intValue();
+    void itShouldDeleteAnswer() throws Exception {
+        AnswerDto createAnswer = Utility.createAnswerDto();
 
+        Optional<AnswerDto> answerOptional = answerService.createAnswer(createAnswer);
+        AnswerDto savedAnswer = answerOptional
+                .orElseThrow(() -> new AnswerException("Can't create answer"));
+
+        int id = savedAnswer.getId().intValue();
         mvc.perform(delete("/api/v1/answers/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -87,11 +101,14 @@ class AnswerControllerTest {
     }
 
     @Test
-    void shouldGetAnswerById() throws Exception{
-        AnswerEntity createAnswer = createAnswer(null, "TestText", 1L, true);
-        Optional<AnswerEntity> answerOptional = answerService.createAnswer(createAnswer);
-        AnswerEntity newAnswer = answerOptional.orElseThrow(IllegalArgumentException::new);
-        int id = newAnswer.getId().intValue();
+    void itShouldGetAnswerById() throws Exception {
+        AnswerDto createAnswer = Utility.createAnswerDto();
+
+        Optional<AnswerDto> answerOptional = answerService.createAnswer(createAnswer);
+        AnswerDto savedAnswer = answerOptional
+                .orElseThrow(() -> new AnswerException("Can't create answer"));
+
+        int id = savedAnswer.getId().intValue();
         mvc.perform(get("/api/v1/answers/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -99,26 +116,8 @@ class AnswerControllerTest {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(id)))
-                .andExpect(jsonPath("text", is(createAnswer.getText())))
-                .andExpect(jsonPath("question", is(createAnswer.getQuestionId().intValue())))
-                .andExpect(jsonPath("true", is(createAnswer.isTrue())));
-        answerService.deleteAnswerById(newAnswer.getId());
-    }
-
-    private AnswerEntity createAnswer(Long id, String text, Long question, Boolean isTrue){
-        AnswerEntity answer = new AnswerEntity();
-        answer.setId(id);
-        answer.setText(text);
-        answer.setQuestionId(question);
-        answer.setTrue(isTrue);
-        return answer;
-    }
-
-    static String asJsonString(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
+                .andExpect(jsonPath("text", is(savedAnswer.getText())))
+                .andExpect(jsonPath("question.id", is(savedAnswer.getQuestion().getId().intValue())))
+                .andExpect(jsonPath("isTrue", is(savedAnswer.getIsTrue())));
     }
 }

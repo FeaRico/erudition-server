@@ -1,7 +1,6 @@
 package ru.mahach.eruditionserver.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,10 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.mahach.eruditionserver.models.entity.QuestionEntity;
+import ru.mahach.eruditionserver.exceptions.base.QuestionException;
+import ru.mahach.eruditionserver.models.dto.QuestionDto;
+import ru.mahach.eruditionserver.repository.QuestionRepository;
 import ru.mahach.eruditionserver.services.QuestionService;
+import ru.mahach.eruditionserver.utils.Utility;
+
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
@@ -24,17 +26,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class QuestionControllerTest {
+    private final MockMvc mvc;
+    private final QuestionRepository questionRepository;
+    private final QuestionService questionService;
 
     @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private QuestionService questionService;
+    QuestionControllerTest(MockMvc mvc, QuestionRepository questionRepository, QuestionService questionService) {
+        this.mvc = mvc;
+        this.questionRepository = questionRepository;
+        this.questionService = questionService;
+    }
+
+    @BeforeEach
+    void setUp() {
+        questionRepository.deleteAll();
+    }
 
     @Test
-    void shouldCreateQuestion() throws Exception{
-        QuestionEntity createQuestion  = createQuestion(null, "TextTest", 1L, "TestPath");
-        MvcResult mvcResult = mvc.perform(post("/api/v1/questions")
-                .content(asJsonString(createQuestion))
+    void itShouldCreateQuestion() throws Exception {
+        QuestionDto createQuestion = Utility.createQuestionDto();
+
+        mvc.perform(post("/api/v1/questions")
+                .content(Utility.objectToJsonString(createQuestion))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -42,43 +55,47 @@ class QuestionControllerTest {
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("text", is(createQuestion.getText())))
-                .andExpect(jsonPath("item", is(createQuestion.getItemId().intValue())))
+                .andExpect(jsonPath("item.id").exists())
                 .andExpect(jsonPath("imagePath", is(createQuestion.getImagePath())))
                 .andReturn();
-
-        String content = mvcResult.getResponse().getContentAsString();
-        Integer createdQuestionId = JsonPath.read(content, "id");
-        questionService.deleteQuestionById((long) createdQuestionId);
     }
 
     @Test
-    void shouldUpdateQuestion() throws Exception{
-        Optional<QuestionEntity> questionOptional = questionService.createQuestion(createQuestion(null, "TextTest", 1L, "TestPath"));
-        QuestionEntity newQuestions = questionOptional.orElseThrow(IllegalArgumentException::new);
-        QuestionEntity updateQuestion = createQuestion(newQuestions.getId(), "TextTestUpdate", 1L, "TestPathUpdate");
+    void itShouldUpdateQuestion() throws Exception {
+        QuestionDto createQuestion = Utility.createQuestionDto();
+
+        Optional<QuestionDto> questionOptional = questionService.createQuestion(createQuestion);
+        QuestionDto savedQuestion = questionOptional
+                .orElseThrow(() -> new QuestionException("Can't create question"));
+
+        QuestionDto updateQuestion = new QuestionDto.Builder()
+                .setId(savedQuestion.getId())
+                .setText("newText")
+                .setImagePath("new/path")
+                .setItem(savedQuestion.getItem())
+                .build();
 
         mvc.perform(put("/api/v1/questions")
-                .content(asJsonString(updateQuestion))
+                .content(Utility.objectToJsonString(updateQuestion))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(updateQuestion.getId().intValue())))
                 .andExpect(jsonPath("text", is(updateQuestion.getText())))
-                .andExpect(jsonPath("item", is(updateQuestion.getItemId().intValue())))
+                .andExpect(jsonPath("item.id", is(updateQuestion.getItem().getId().intValue())))
                 .andExpect(jsonPath("imagePath", is(updateQuestion.getImagePath())));
-
-        questionService.deleteQuestionById(updateQuestion.getId()).orElseThrow();
     }
 
     @Test
-    void shouldDeleteQuestion() throws Exception{
-        QuestionEntity createQuestion = createQuestion(null, "TextTest", 1L, "TestPath");
-        Optional<QuestionEntity> questionOptional = questionService.createQuestion(createQuestion);
-        QuestionEntity newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
-        int id = newQuestion.getId().intValue();
+    void itShouldDeleteQuestion() throws Exception {
+        QuestionDto createQuestion = Utility.createQuestionDto();
 
+        Optional<QuestionDto> questionOptional = questionService.createQuestion(createQuestion);
+        QuestionDto savedQuestion = questionOptional
+                .orElseThrow(() -> new QuestionException("Can't create question"));
+
+        int id = savedQuestion.getId().intValue();
         mvc.perform(delete("/api/v1/questions/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -89,12 +106,14 @@ class QuestionControllerTest {
     }
 
     @Test
-    void shouldGetQuestionById() throws Exception{
-        QuestionEntity createQuestion = createQuestion(null, "TextTest", 1L, "TestPath");
-        Optional<QuestionEntity> questionOptional = questionService.createQuestion(createQuestion);
-        QuestionEntity newQuestion = questionOptional.orElseThrow(IllegalArgumentException::new);
-        int id = newQuestion.getId().intValue();
+    void itShouldGetQuestionById() throws Exception {
+        QuestionDto createQuestion = Utility.createQuestionDto();
 
+        Optional<QuestionDto> questionOptional = questionService.createQuestion(createQuestion);
+        QuestionDto savedQuestion = questionOptional
+                .orElseThrow(() -> new QuestionException("Can't create question"));
+
+        int id = savedQuestion.getId().intValue();
         mvc.perform(get("/api/v1/questions/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -102,26 +121,8 @@ class QuestionControllerTest {
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id", is(id)))
-                .andExpect(jsonPath("text", is(createQuestion.getText())))
-                .andExpect(jsonPath("item", is(createQuestion.getItemId().intValue())))
-                .andExpect(jsonPath("imagePath", is(createQuestion.getImagePath())));
-        questionService.deleteQuestionById(newQuestion.getId());
-    }
-
-    private QuestionEntity createQuestion(Long id, String text, Long item, String imagePath){
-        QuestionEntity question = new QuestionEntity();
-        question.setId(id);
-        question.setText(text);
-        question.setItemId(item);
-        question.setImagePath(imagePath);
-        return question;
-    }
-
-    static String asJsonString(Object obj){
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e){
-            throw new IllegalArgumentException(e);
-        }
+                .andExpect(jsonPath("text", is(savedQuestion.getText())))
+                .andExpect(jsonPath("item.id", is(savedQuestion.getItem().getId().intValue())))
+                .andExpect(jsonPath("imagePath", is(savedQuestion.getImagePath())));
     }
 }

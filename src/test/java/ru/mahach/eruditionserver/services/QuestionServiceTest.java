@@ -7,10 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.QuestionException;
-import ru.mahach.eruditionserver.models.dto.ItemDto;
 import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.models.entity.QuestionEntity;
 import ru.mahach.eruditionserver.repository.QuestionRepository;
+import ru.mahach.eruditionserver.utils.Utility;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -40,10 +40,10 @@ class QuestionServiceTest {
     }
 
     @Test
-    void create() {
-        QuestionDto questionDto = createQuestionDto(11111);
+    void itShouldCreateQuestion() {
+        QuestionDto questionDto = Utility.createQuestionDto();
 
-        Optional<QuestionDto> questionDtoOptional = questionService.create(questionDto);
+        Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
                 .orElseThrow(() -> new QuestionException("Can't create question"));
         assertNotNull(savedQuestion.getId());
@@ -51,14 +51,14 @@ class QuestionServiceTest {
         List<QuestionEntity> foundQuestions = questionRepository.findAll();
         assertEquals(1, foundQuestions.size());
 
-        equalsQuestions(savedQuestion, foundQuestions.get(0));
+        Utility.equalsQuestions(savedQuestion, foundQuestions.get(0));
     }
 
     @Test
-    void update() {
-        QuestionDto questionDto = createQuestionDto(22222);
+    void itShouldUpdateQuestion() {
+        QuestionDto questionDto = Utility.createQuestionDto();
 
-        Optional<QuestionDto> questionDtoOptional = questionService.create(questionDto);
+        Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
                 .orElseThrow(() -> new QuestionException("Can't create question"));
         assertNotNull(savedQuestion.getId());
@@ -69,21 +69,21 @@ class QuestionServiceTest {
                 .setImagePath("new/path")
                 .setItem(savedQuestion.getItem())
                 .build();
-        Optional<QuestionDto> questionDtoOptionalUpdate = questionService.update(toUpdateQuestionDto);
+        Optional<QuestionDto> questionDtoOptionalUpdate = questionService.updateQuestion(toUpdateQuestionDto);
 
         QuestionDto updatedQuestion = questionDtoOptionalUpdate
                 .orElseThrow(() -> new QuestionException("Can't update question with id = " + savedQuestion.getId()));
 
         QuestionEntity foundQuestion = questionRepository.getById(updatedQuestion.getId());
 
-        equalsQuestions(updatedQuestion, foundQuestion);
+        Utility.equalsQuestions(updatedQuestion, foundQuestion);
     }
 
     @Test
-    void deleteById() {
-        QuestionDto questionDto = createQuestionDto(33333);
+    void itShouldDeleteQuestionById() {
+        QuestionDto questionDto = Utility.createQuestionDto();
 
-        Optional<QuestionDto> questionDtoOptional = questionService.create(questionDto);
+        Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
                 .orElseThrow(() -> new QuestionException("Can't create question"));
         assertNotNull(savedQuestion.getId());
@@ -91,69 +91,47 @@ class QuestionServiceTest {
         List<QuestionEntity> foundQuestionsBefore = questionRepository.findAll();
         assertEquals(1, foundQuestionsBefore.size());
 
-        Optional<QuestionDto> deletedQuestionOptional = questionService.deleteById(savedQuestion.getId());
+        Optional<QuestionDto> deletedQuestionOptional = questionService.deleteQuestionById(savedQuestion.getId());
         QuestionDto deletedQuestion = deletedQuestionOptional
                 .orElseThrow(() -> new QuestionException("Can't delete question with id = " + savedQuestion.getId()));
-        equalsQuestions(savedQuestion, deletedQuestion);
+        Utility.equalsQuestions(savedQuestion, deletedQuestion);
 
         List<QuestionEntity> foundQuestionAfter = questionRepository.findAll();
         assertEquals(0, foundQuestionAfter.size());
     }
 
     @Test
-    void getById() {
-        QuestionDto questionDto = createQuestionDto(44444);
+    void itShouldGetQuestionById() {
+        QuestionDto questionDto = Utility.createQuestionDto();
 
-        Optional<QuestionDto> questionDtoOptional = questionService.create(questionDto);
+        Optional<QuestionDto> questionDtoOptional = questionService.createQuestion(questionDto);
         QuestionDto savedQuestion = questionDtoOptional
                 .orElseThrow(() -> new QuestionException("Can't create question"));
         assertNotNull(savedQuestion.getId());
 
-        Optional<QuestionDto> foundQuestionOptional = questionService.getById(savedQuestion.getId());
+        Optional<QuestionDto> foundQuestionOptional = questionService.getQuestionById(savedQuestion.getId());
         QuestionDto foundQuestion = foundQuestionOptional
                 .orElseThrow(QuestionNotFoundException::new);
 
-        equalsQuestions(savedQuestion, foundQuestion);
+        Utility.equalsQuestions(savedQuestion, foundQuestion);
     }
 
     @Test
-    void getAll() {
+    void itShouldGetAllQuestions() {
         List<QuestionDto> questionDtos = IntStream.range(0, 3)
-                .mapToObj(i -> createQuestionDto(55555 + i))
+                .mapToObj(i -> Utility.createQuestionDto())
                 .collect(Collectors.toList());
 
         List<QuestionDto> savedDtos = questionDtos.stream()
-                .map(questionService::create)
+                .map(questionService::createQuestion)
                 .map(questionDto -> questionDto
                         .orElseThrow(() -> new QuestionException("Can't create question")))
                 .collect(Collectors.toList());
         savedDtos.forEach(question -> assertNotNull(question.getId()));
 
-        List<QuestionDto> foundQuestions = questionService.getAll();
+        List<QuestionDto> foundQuestions = questionService.getAllQuestions();
         assertEquals(3, foundQuestions.size());
 
-        IntStream.range(0, 3).forEach(i -> equalsQuestions(savedDtos.get(i), foundQuestions.get(i)));
-    }
-
-    private void equalsQuestions(QuestionDto expected, QuestionDto actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getText(), actual.getText());
-        assertEquals(expected.getImagePath(), actual.getImagePath());
-        assertEquals(expected.getItem(), expected.getItem());
-    }
-
-    private void equalsQuestions(QuestionDto expected, QuestionEntity actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getText(), actual.getText());
-        assertEquals(expected.getImagePath(), actual.getImagePath());
-    }
-
-    private QuestionDto createQuestionDto(int num) {
-        ItemDto item = new ItemDto(null, "testItem", "test/path");
-        return new QuestionDto.Builder()
-                .setText("testQuestion" + num)
-                .setImagePath("test/path/quest")
-                .setItem(item)
-                .build();
+        IntStream.range(0, 3).forEach(i -> Utility.equalsQuestions(savedDtos.get(i), foundQuestions.get(i)));
     }
 }

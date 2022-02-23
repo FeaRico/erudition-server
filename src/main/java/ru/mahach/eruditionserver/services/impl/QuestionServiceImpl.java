@@ -30,14 +30,14 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Optional<QuestionDto> create(QuestionDto question) {
+    public Optional<QuestionDto> createQuestion(QuestionDto question) {
         QuestionEntity saveEntity = questionRepository.save(questionConverter.dtoToEntity(question));
 
         return Optional.of(questionConverter.entityToDto(saveEntity));
     }
 
     @Override
-    public Optional<QuestionDto> update(QuestionDto question) {
+    public Optional<QuestionDto> updateQuestion(QuestionDto question) {
         questionRepository.findById(question.getId())
                 .orElseThrow(() -> new QuestionNotFoundException(question.getId()));
         QuestionEntity questionEntity = questionConverter.dtoToEntity(question);
@@ -46,7 +46,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Optional<QuestionDto> deleteById(Long id) {
+    public Optional<QuestionDto> deleteQuestionById(Long id) {
         QuestionEntity questionToDelete = questionRepository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));
         questionRepository.deleteById(id);
@@ -56,7 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<QuestionDto> getById(Long id) {
+    public Optional<QuestionDto> getQuestionById(Long id) {
         QuestionEntity findQuestion = questionRepository.findById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id));
 
@@ -65,7 +65,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<QuestionDto> getAll() {
+    public List<QuestionDto> getAllQuestions() {
         List<QuestionEntity> findQuestions = questionRepository.findAll();
 
         return questionConverter.entityToDto(findQuestions);

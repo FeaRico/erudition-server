@@ -57,11 +57,11 @@ public class AnswerEntity {
         this.text = text;
     }
 
-    public Boolean isTrue() {
+    public Boolean getIsTrue() {
         return isTrue;
     }
 
-    public void setTrue(Boolean isTrue) {
+    public void setIsTrue(Boolean isTrue) {
         this.isTrue = isTrue;
     }
 

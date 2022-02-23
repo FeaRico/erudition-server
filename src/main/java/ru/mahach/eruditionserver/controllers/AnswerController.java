@@ -21,31 +21,31 @@ public class AnswerController {
 
     @PostMapping
     public ResponseEntity<AnswerDto> createAnswer(@RequestBody AnswerDto answer) {
-        return ResponseEntity.ok(answerService.create(answer)
+        return ResponseEntity.ok(answerService.createAnswer(answer)
                 .orElseThrow(() -> new AnswerException("Failed to create answer")));
     }
 
     @PutMapping
     public ResponseEntity<AnswerDto> updateAnswer(@RequestBody AnswerDto answer) {
-        return ResponseEntity.ok(answerService.update(answer)
+        return ResponseEntity.ok(answerService.updateAnswer(answer)
                 .orElseThrow(() -> new AnswerException("Failed to update answer with id = " + answer.getId())));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<AnswerDto> deleteAnswer(@PathVariable Long id) {
-        return ResponseEntity.ok(answerService.deleteById(id)
+        return ResponseEntity.ok(answerService.deleteAnswerById(id)
                 .orElseThrow(() -> new AnswerException("Failed to delete answer with id = " + id)));
     }
 
     @GetMapping
     public ResponseEntity<List<AnswerDto>> allAnswers() {
-        List<AnswerDto> result = answerService.getAll();
+        List<AnswerDto> result = answerService.getAllAnswers();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<AnswerDto> answerById(@PathVariable Long id) {
-        return ResponseEntity.ok(answerService.getById(id)
+        return ResponseEntity.ok(answerService.getAnswerById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id)));
     }
 }
