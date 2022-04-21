@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EruditionServerApplication {
+public class EruditionServer {
     public static void main(String[] args) {
-        SpringApplication.run(EruditionServerApplication.class, args);
+        SpringApplication.run(EruditionServer.class, args);
     }
 }

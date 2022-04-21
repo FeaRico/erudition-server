@@ -22,4 +22,6 @@ public interface QuestionService {
     Optional<QuestionDto> getQuestionById(Long id);
 
     List<QuestionDto> getAllQuestions();
+
+    List<QuestionDto> getAllQuestionsByItemId(Long itemId);
 }

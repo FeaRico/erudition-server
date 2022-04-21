@@ -70,4 +70,9 @@ public class QuestionServiceImpl implements QuestionService {
 
         return questionConverter.entityToDto(findQuestions);
     }
+
+    @Override
+    public List<QuestionDto> getAllQuestionsByItemId(Long itemId) {
+        return questionConverter.entityToDto(questionRepository.findQuestionsByItemId(itemId));
+    }
 }

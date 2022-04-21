@@ -57,4 +57,9 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getQuestionById(id)
                 .orElseThrow(() -> new QuestionNotFoundException(id)));
     }
+
+    @GetMapping("/item/{itemId}")
+    public ResponseEntity<List<QuestionDto>> questionByItemId(@PathVariable @Min(1) Long itemId){
+        return ResponseEntity.ok(questionService.getAllQuestionsByItemId(itemId));
+    }
 }

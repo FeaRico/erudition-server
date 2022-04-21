@@ -23,4 +23,6 @@ public interface AnswerService {
     Optional<AnswerDto> getAnswerById(Long id);
 
     List<AnswerDto> getAllAnswers();
+
+    List<AnswerDto> getAnswersByQuestionId(Long questionId);
 }

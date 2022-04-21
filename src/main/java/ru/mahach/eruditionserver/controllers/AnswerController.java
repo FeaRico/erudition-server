@@ -55,4 +55,9 @@ public class AnswerController {
         return ResponseEntity.ok(answerService.getAnswerById(id)
                 .orElseThrow(() -> new AnswerNotFoundException(id)));
     }
+
+    @GetMapping("/question/{questionId}")
+    public ResponseEntity<List<AnswerDto>> answersByQuestionId(@PathVariable @Min(1) Long questionId){
+        return ResponseEntity.ok(answerService.getAnswersByQuestionId(questionId));
+    }
 }

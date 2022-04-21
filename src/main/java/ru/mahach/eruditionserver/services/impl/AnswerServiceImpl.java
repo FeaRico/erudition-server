@@ -71,4 +71,9 @@ public class AnswerServiceImpl implements AnswerService {
         List<AnswerEntity> findAnswers = answerRepository.findAll();
         return answerConverter.entityToDto(findAnswers);
     }
+
+    @Override
+    public List<AnswerDto> getAnswersByQuestionId(Long questionId) {
+        return answerConverter.entityToDto(answerRepository.findAnswersByQuestionId(questionId));
+    }
 }
