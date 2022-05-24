@@ -1,12 +1,16 @@
 package ru.mahach.eruditionserver.controllers;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import ru.mahach.eruditionserver.exceptions.QuestionNotFoundException;
 import ru.mahach.eruditionserver.exceptions.base.QuestionException;
 import ru.mahach.eruditionserver.models.dto.QuestionDto;
 import ru.mahach.eruditionserver.services.QuestionService;
+import ru.mahach.eruditionserver.sse.event.question.QuestionCreatedEvent;
+import ru.mahach.eruditionserver.sse.registry.SseClientsRegistry;
 import ru.mahach.eruditionserver.validation.Marker;
 
 import javax.validation.Valid;
@@ -19,16 +23,23 @@ import java.util.List;
 @Validated
 public class QuestionController {
     private final QuestionService questionService;
+    private final SseClientsRegistry sseClientsRegistry;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public QuestionController(QuestionService questionService) {
+    public QuestionController(QuestionService questionService, SseClientsRegistry sseClientsRegistry, ApplicationEventPublisher eventPublisher) {
         this.questionService = questionService;
+        this.sseClientsRegistry = sseClientsRegistry;
+        this.eventPublisher = eventPublisher;
     }
 
     @PostMapping
     @Validated(Marker.Create.class)
     public ResponseEntity<QuestionDto> createQuestion(@RequestBody @Valid QuestionDto question) {
-        return ResponseEntity.ok(questionService.createQuestion(question)
-                .orElseThrow(() -> new QuestionException("Failed to create question")));
+        QuestionDto createdQuestion = questionService.createQuestion(question)
+                .orElseThrow(() -> new QuestionException("Failed to create question"));
+        eventPublisher.publishEvent(new QuestionCreatedEvent(createdQuestion.getId(),
+                System.currentTimeMillis()));
+        return ResponseEntity.ok(createdQuestion);
     }
 
     @PutMapping
@@ -59,7 +70,17 @@ public class QuestionController {
     }
 
     @GetMapping("/item/{itemId}")
-    public ResponseEntity<List<QuestionDto>> questionByItemId(@PathVariable @Min(1) Long itemId){
+    public ResponseEntity<List<QuestionDto>> questionByItemId(@PathVariable @Min(1) Long itemId) {
         return ResponseEntity.ok(questionService.getAllQuestionsByItemId(itemId));
+    }
+
+    @GetMapping("/sse/subscribe")
+    public SseEmitter subscribeSse(@RequestHeader String uuid) {
+        return sseClientsRegistry.register(uuid, -1L);
+    }
+
+    @GetMapping("/sse/unsubscribe")
+    public void unsubscribeSse(@RequestHeader String uuid) {
+        sseClientsRegistry.unregister(uuid);
     }
 }
